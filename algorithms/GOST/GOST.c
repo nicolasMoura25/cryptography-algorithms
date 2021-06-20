@@ -28,7 +28,7 @@ const short s_box[8][16] = {
 									{ 1, 15, 13, 0, 5, 7, 10, 4, 9, 2, 3, 14, 6, 11, 8, 12 }
 };
 
-void gostRound(unsigned __int32 xi)
+void round(unsigned __int32 xi)
 {
 	CM1 = (N1 + xi) % 4294967296; // 2^32
 
@@ -67,7 +67,7 @@ void gostRound(unsigned __int32 xi)
 	N1 = CM2;
 }
 
-unsigned __int64 encrypt(unsigned __int64 block, unsigned __int32* key)
+unsigned __int64 GOST_encrypt(unsigned __int64 block, unsigned __int32* key)
 {
 	N1 = block;
 	N2 = block >> 32;
@@ -77,14 +77,14 @@ unsigned __int64 encrypt(unsigned __int64 block, unsigned __int32* key)
 	{
 		for (int i = 0; i <= 7; i++)
 		{
-			gostRound(key[i]);
+			round(key[i]);
 		}
 	}
 
 	// last 8 rounds
 	for (int i = 7; i >= 0; i--)
 	{
-		gostRound(key[i]);
+		round(key[i]);
 	}
 
 	unsigned __int64 tc = N1;
@@ -92,7 +92,7 @@ unsigned __int64 encrypt(unsigned __int64 block, unsigned __int32* key)
 	return tc;
 }
 
-unsigned __int64 decrypt(unsigned __int64 encryptedBlock, unsigned __int32* key)
+unsigned __int64 GOST_decrypt(unsigned __int64 encryptedBlock, unsigned __int32* key)
 {
 	N1 = encryptedBlock;
 	N2 = encryptedBlock >> 32;
@@ -100,7 +100,7 @@ unsigned __int64 decrypt(unsigned __int64 encryptedBlock, unsigned __int32* key)
 	// last 8 rounds
 	for (int i = 0; i <= 7; i++)
 	{
-		gostRound(key[i]);
+		round(key[i]);
 	}
 
 	// first 24 rounds
@@ -108,11 +108,36 @@ unsigned __int64 decrypt(unsigned __int64 encryptedBlock, unsigned __int32* key)
 	{
 		for (int i = 7; i >= 0; i--)
 		{
-			gostRound(key[i]);
+			round(key[i]);
 		}
 	}
 
 	unsigned __int64 tc = N1;
 	tc = (tc << 32) | N2;
 	return tc;
+}
+
+void GOST_main(void)
+{
+	unsigned __int32 key[8];
+	for (int i = 0; i < 8; i++)
+	{
+		key[i] = i;
+	}
+
+	unsigned __int64 ivalue = 118105110105;
+
+	unsigned __int64 encrypted = GOST_encrypt(ivalue, key);
+	unsigned __int64 decrypted = GOST_decrypt(encrypted, key);
+
+	printf("key: ");
+	for (int i = 0; i < 8; i++)
+	{
+		printf("%d ", key[i]);
+	}
+	printf("\n");
+
+	printf("unencrypted txt %llu \n", ivalue);
+	printf("encrypted txt: %llu \n", encrypted);
+	printf("decrypted txt %llu \n", decrypted);
 }

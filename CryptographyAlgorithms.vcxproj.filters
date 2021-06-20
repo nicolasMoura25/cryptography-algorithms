@@ -21,7 +21,7 @@
     <ClCompile Include="algorithms\GOST\GOST.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="algorithms\GOST\GOST_EXAMPLE.c">
+    <ClCompile Include="algorithms\ARIA\ARIA.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClInclude Include="algorithms\GOST\GOST.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="algorithms\GOST\GOST_EXAMPLE.h">
+    <ClInclude Include="algorithms\ARIA\ARIA.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

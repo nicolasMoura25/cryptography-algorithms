@@ -139,13 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="algorithms\ARIA\ARIA.c" />
     <ClCompile Include="algorithms\GOST\GOST.c" />
-    <ClCompile Include="algorithms\GOST\GOST_EXAMPLE.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="algorithms\ARIA\ARIA.h" />
     <ClInclude Include="algorithms\GOST\GOST.h" />
-    <ClInclude Include="algorithms\GOST\GOST_EXAMPLE.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
