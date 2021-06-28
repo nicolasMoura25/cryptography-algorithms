@@ -1,10 +1,18 @@
 #include "ARIA.h"
+
 /*
+*
+*			ARIA
+*
+*	128-bits block 128-bits key
+*
+*
 * This is an implementation of the cipher algorithm ARIA
 *
 * Implementation References:
 * - https://datatracker.ietf.org/doc/html/rfc5794#section-2.4.3
 * - https://www.oryx-embedded.com/doc/aria_8c_source.html
+* - https://github.com/dcurrie/aria-crypto/blob/master/aria.c
 */
 
 // constants
@@ -126,7 +134,7 @@ const unsigned __int8 SB4[256] = {
 								0x25, 0x8a, 0xb5, 0xe7, 0x42, 0xb3, 0xc7, 0xea, 0xf7, 0x4c, 0x11, 0x33, 0x03, 0xa2, 0xac, 0x60
 };
 
-void XOR_128(unsigned __int32* y, unsigned __int32* x)
+static void XOR_128(unsigned __int32* y, unsigned __int32* x)
 {
 	y[0] ^= x[0];
 	y[1] ^= x[1];
@@ -134,7 +142,7 @@ void XOR_128(unsigned __int32* y, unsigned __int32* x)
 	y[3] ^= x[3];
 }
 
-void MOV_128(unsigned __int32* y, unsigned __int32* x)
+static void MOV_128(unsigned __int32* y, unsigned __int32* x)
 {
 	y[0] = x[0];
 	y[1] = x[1];
@@ -143,7 +151,7 @@ void MOV_128(unsigned __int32* y, unsigned __int32* x)
 }
 
 // Rotate Left circular shift 128 bits
-void ROL_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
+static void ROL_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
 {
 	y[0] = (x[0] << n) | (x[1] >> (32 - n));
 	y[1] = (x[1] << n) | (x[2] >> (32 - n));
@@ -152,7 +160,7 @@ void ROL_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
 }
 
 // Rotate Right circular shift 128 bits
-void ROR_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
+static void ROR_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
 {
 	y[3] = (x[3] >> n) | (x[2] << (32 - n));
 	y[2] = (x[2] >> n) | (x[1] << (32 - n));
@@ -160,7 +168,7 @@ void ROR_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
 	y[0] = (x[0] >> n) | (x[3] << (32 - n));
 }
 
-void SL1(unsigned __int32* input, unsigned __int32* output)
+static void SL1(unsigned __int32* input, unsigned __int32* output)
 {
 	/*
 		y0 = SB1(x0),  y1 = SB2(x1),  y2 = SB3(x2),  y3 = SB4(x3),
@@ -190,7 +198,7 @@ void SL1(unsigned __int32* input, unsigned __int32* output)
 		| SB4[(unsigned __int8)(input[3] >> 0)];
 }
 
-void SL2(unsigned __int32* input, unsigned __int32* output)
+static void SL2(unsigned __int32* input, unsigned __int32* output)
 {
 	/*
 		y0 = SB3(x0),  y1 = SB4(x1),  y2 = SB1(x2),  y3 = SB2(x3),
@@ -220,7 +228,7 @@ void SL2(unsigned __int32* input, unsigned __int32* output)
 		| SB2[(unsigned __int8)(input[3] >> 0)];
 }
 
-void A(unsigned __int32* input, unsigned __int32* output)
+static void A(unsigned __int32* input, unsigned __int32* output)
 {
 	/*
 		y0  = x3 ^ x4 ^ x6 ^ x8  ^ x9  ^ x13 ^ x14,
@@ -281,7 +289,7 @@ void A(unsigned __int32* input, unsigned __int32* output)
 	output[3] = y12 << 24 | y13 << 16 | y14 << 8 | y15;
 }
 
-void FO(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
+static void FO(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
 {
 	// A(SL1(D ^ RK))
 	unsigned __int32 y[4];
@@ -297,7 +305,7 @@ void FO(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
 	A(y, output);
 }
 
-void FE(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
+static void FE(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
 {
 	// A(SL2(D ^ RK))
 	unsigned __int32 y[4];
@@ -313,7 +321,7 @@ void FE(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
 	A(y, output);
 }
 
-void generateEncryptionKeys(void)
+static void generateEncryptionKeys(void)
 {
 	/*
 		ek1  = W0 ^(W1 >>> 19),
@@ -369,7 +377,7 @@ void generateEncryptionKeys(void)
 	XOR_128(ek13, W0);
 }
 
-void generateDecryptionKeys(void)
+static void generateDecryptionKeys(void)
 {
 	/*
 		n = 12
@@ -498,38 +506,43 @@ void ARIA_main(void)
 	ARIA_encrypt(text, key, cipherText);
 	ARIA_decrypt(cipherText, key, decryptedText);
 
-	printf("key: ");
+	printf("key: \t\t\t\t");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x ", key[i]);
 	}
 	printf("\n");
 
-	printf("expected encrypted text: ");
+	printf("text: \t\t\t\t");
+	for (int i = 0; i < 4; i++)
+	{
+		printf("%08x ", text[i]);
+	}
+	printf("\n");
+
+	printf("encrypted text: \t\t");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x ", cipherText[i]);
 	}
 	printf("\n");
 
-	printf("expected encrypted text: ");
+	printf("expected encrypted text: \t");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x ", expectedCipherText[i]);
 	}
 	printf("\n");
 
-	printf("decrypted text: ");
+	printf("decrypted text: \t\t");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x ", decryptedText[i]);
 	}
 	printf("\n");
 
-	printf("text: ");
-	for (int i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
+	assert(text[0] == decryptedText[0]);
+	assert(text[1] == decryptedText[1]);
+	assert(text[2] == decryptedText[2]);
+	assert(text[3] == decryptedText[3]);
 }

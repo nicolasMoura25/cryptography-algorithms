@@ -1,13 +1,19 @@
 #include "GOST.h"
 
 /*
+*
+* 			GOST
+*
+*	64-bits block 256-bits key
+*
+*
 * This is an implementation of the cipher algorithm GOST 28147-89 in Electronic Codebook Mode
-* 
+*
 * Implementation References:
-* - https://datatracker.ietf.org/doc/html/rfc5830#section-5.1
+* - https://datatracker.ietf.org/doc/html/rfc5830
 * - https://github.com/rbingabo/GOST-block-cipher
-* -  B.Shneier, ”Applied Cryptography”, John Wiley & Sons, pp. 331-334 
-*		(file:///C:/Users/Vinicius/Downloads/Schneier%20-%20Applied%20Cryptography%202ed%20-%20Wiley.pdf pag. 277)
+* -  B.Shneier, ”Applied Cryptography”, John Wiley & Sons, pp. 331-334
+*		(https://mrajacse.files.wordpress.com/2012/01/applied-cryptography-2nd-ed-b-schneier.pdf pag. 277)
 */
 
 unsigned __int32 CM1;
@@ -17,7 +23,7 @@ unsigned __int32 N2;
 unsigned __int32 R;
 
 // S-box used by the Central Bank of Russian Federation
-const short s_box[8][16] = {
+const unsigned __int8 s_box[8][16] = {
 									{ 4, 10, 9, 2, 13, 8, 0, 14, 6, 11, 1, 12, 7, 15, 5, 3 },
 									{ 14, 11, 4, 12, 6, 13, 15, 10, 2, 3, 8, 1, 0, 7, 5, 9 },
 									{ 5, 8, 1, 13, 10, 3, 4, 2, 14, 15, 12, 7, 6, 0, 9, 11 },
@@ -69,7 +75,7 @@ void round(unsigned __int32 xi)
 
 unsigned __int64 GOST_encrypt(unsigned __int64 block, unsigned __int32* key)
 {
-	N1 = block;
+	N1 = (unsigned __int32)block;
 	N2 = block >> 32;
 
 	// first 24 rounds
@@ -94,7 +100,7 @@ unsigned __int64 GOST_encrypt(unsigned __int64 block, unsigned __int32* key)
 
 unsigned __int64 GOST_decrypt(unsigned __int64 encryptedBlock, unsigned __int32* key)
 {
-	N1 = encryptedBlock;
+	N1 = (unsigned __int32)encryptedBlock;
 	N2 = encryptedBlock >> 32;
 
 	// last 8 rounds
@@ -125,9 +131,9 @@ void GOST_main(void)
 		key[i] = i;
 	}
 
-	unsigned __int64 ivalue = 118105110105;
+	unsigned __int64 text = 118105110105;
 
-	unsigned __int64 encrypted = GOST_encrypt(ivalue, key);
+	unsigned __int64 encrypted = GOST_encrypt(text, key);
 	unsigned __int64 decrypted = GOST_decrypt(encrypted, key);
 
 	printf("key: ");
@@ -137,7 +143,9 @@ void GOST_main(void)
 	}
 	printf("\n");
 
-	printf("unencrypted txt %llu \n", ivalue);
+	printf("unencrypted txt %llu \n", text);
 	printf("encrypted txt: %llu \n", encrypted);
 	printf("decrypted txt %llu \n", decrypted);
+
+	assert(text == encrypted);
 }
