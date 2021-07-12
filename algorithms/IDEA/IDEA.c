@@ -12,6 +12,7 @@
 * Implementation References:
 * - https://github.com/stamparm/cryptospecs/blob/master/symmetrical/specs/idea.pdf
 * - https://github.com/stamparm/cryptospecs/blob/master/symmetrical/sources/idea.c
+* - https://github.com/bgreenlee/PassKeeper/blob/master/CRYPTLIB/IDEA/IDEA.C
 * - https://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=B830DE37452CA41AE7336F3C1DA326AA?doi=10.1.1.14.3451&rep=rep1&type=pdf
 */
 

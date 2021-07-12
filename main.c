@@ -6,10 +6,10 @@
 
 int main()
 {
-	//GOST_main();
+	GOST_main();
 	//ARIA_main();
 	//NOEKEON_main();
-	IDEA_main();
+	//IDEA_main();
 
 	return 0;
 }

@@ -132,20 +132,22 @@ void GOST_main(void)
 	}
 
 	unsigned __int64 text = 118105110105;
+	unsigned __int64 expectedCipherText = 3078704057068866123;
 
-	unsigned __int64 encrypted = GOST_encrypt(text, key);
-	unsigned __int64 decrypted = GOST_decrypt(encrypted, key);
+	unsigned __int64 cipherText = GOST_encrypt(text, key);
+	unsigned __int64 decrypted = GOST_decrypt(cipherText, key);
 
-	printf("key: ");
+	printf("key: \t\t\t\t");
 	for (int i = 0; i < 8; i++)
 	{
-		printf("%d ", key[i]);
+		printf("%08x ", key[i]);
 	}
 	printf("\n");
 
-	printf("unencrypted txt %llu \n", text);
-	printf("encrypted txt: %llu \n", encrypted);
-	printf("decrypted txt %llu \n", decrypted);
+	printf("text: \t\t\t\t%016llx \n", text);
+	printf("encrypted text: \t\t%016llx \n", cipherText);
+	printf("expected encrypted text: \t%016llx \n", expectedCipherText);
+	printf("decrypted text: \t\t%016llx \n", decrypted);
 
-	assert(text == encrypted);
+	assert(text == decrypted);
 }
