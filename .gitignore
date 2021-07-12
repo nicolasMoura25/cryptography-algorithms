@@ -44,6 +44,9 @@ bld/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
+*.vcxproj
+*.filters
+*.user
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
