@@ -27,6 +27,9 @@
     <ClCompile Include="algorithms\NOEKEON\NOEKEON.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="algorithms\IDEA\IDEA.c">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algorithms\GOST\GOST.h">
@@ -36,6 +39,9 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="algorithms\NOEKEON\NOEKEON.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="algorithms\IDEA\IDEA.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
