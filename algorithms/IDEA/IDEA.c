@@ -132,34 +132,49 @@ static void generateEncryptionKeys(unsigned __int16* key, unsigned __int16 Z[52]
 	}
 }
 
-//TODO verify and modify this method
 static void generateDecryptionKeys(unsigned __int16* key, unsigned __int16 Z[52])
 {
-	unsigned __int16 kb[52], i, j;
+	int i;
+	unsigned __int16 t1, t2, t3;
+	unsigned __int16 temp[ENCRYPTION_KEY_LEN];
+	unsigned __int16* p = temp + ENCRYPTION_KEY_LEN;
 
-	for (i = 0, j = 48; i < 52; i += 6, j -= 6)
+	t1 = inv(*key++);
+	t2 = -*key++;
+	t3 = -*key++;
+	*--p = inv(*key++);
+	*--p = t3;
+	*--p = t2;
+	*--p = t1;
+
+	for (i = 0; i < NR_ROUNDS - 1; i++)
 	{
-		kb[i + 0] = inv(key[j + 0]);
-		if ((i == 0) || (i == 48))
-		{
-			kb[i + 1] = -key[j + 1];
-			kb[i + 2] = -key[j + 2];
-		}
-		else
-		{
-			kb[i + 1] = -key[j + 2];
-			kb[i + 2] = -key[j + 1];
-		}
-		kb[i + 3] = inv(key[j + 3]);
-		if (i < 48)
-		{
-			kb[i + 4] = key[j - 2];
-			kb[i + 5] = key[j - 1];
-		}
-	}
+		t1 = *key++;
+		*--p = *key++;
+		*--p = t1;
 
-	for (i = 0; i < 52; i++)
-		Z[i] = kb[i];
+		t1 = inv(*key++);
+		t2 = -*key++;
+		t3 = -*key++;
+		*--p = inv(*key++);
+		*--p = t2;
+		*--p = t3;
+		*--p = t1;
+	}
+	t1 = *key++;
+	*--p = *key++;
+	*--p = t1;
+
+	t1 = inv(*key++);
+	t2 = -*key++;
+	t3 = -*key++;
+	*--p = inv(*key++);
+	*--p = t3;
+	*--p = t2;
+	*--p = t1;
+
+	/* Copy and destroy temp copy */
+	memcpy(Z, temp, sizeof(temp));
 }
 
 static void idea(unsigned __int16* block, unsigned __int16* Z, unsigned __int16* out)
