@@ -479,6 +479,7 @@ void ARIA_decrypt(unsigned __int32* block, unsigned __int32* key, unsigned __int
 
 void ARIA_main(void)
 {
+	int i;
 	unsigned __int32 key[4];
 	unsigned __int32 text[4];
 	unsigned __int32 cipherText[4];
@@ -507,35 +508,35 @@ void ARIA_main(void)
 	ARIA_decrypt(cipherText, key, decryptedText);
 
 	printf("key: \t\t\t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", key[i]);
 	}
 	printf("\n");
 
 	printf("text: \t\t\t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", text[i]);
 	}
 	printf("\n");
 
 	printf("encrypted text: \t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", cipherText[i]);
 	}
 	printf("\n");
 
 	printf("expected encrypted text: \t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", expectedCipherText[i]);
 	}
 	printf("\n");
 
 	printf("decrypted text: \t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", decryptedText[i]);
 	}

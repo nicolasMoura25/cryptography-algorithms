@@ -126,7 +126,8 @@ unsigned __int64 GOST_decrypt(unsigned __int64 encryptedBlock, unsigned __int32*
 void GOST_main(void)
 {
 	unsigned __int32 key[8];
-	for (int i = 0; i < 8; i++)
+	int i;
+	for (i = 0; i < 8; i++)
 	{
 		key[i] = i;
 	}
@@ -138,16 +139,23 @@ void GOST_main(void)
 	unsigned __int64 decrypted = GOST_decrypt(cipherText, key);
 
 	printf("key: \t\t\t\t");
-	for (int i = 0; i < 8; i++)
+	for (i = 0; i < 8; i++)
 	{
 		printf("%08x ", key[i]);
 	}
 	printf("\n");
 
-	printf("text: \t\t\t\t%016llx \n", text);
-	printf("encrypted text: \t\t%016llx \n", cipherText);
-	printf("expected encrypted text: \t%016llx \n", expectedCipherText);
-	printf("decrypted text: \t\t%016llx \n", decrypted);
+	printf("text: \t\t\t\t%016llx", text);
+	printf("\n");
+
+	printf("encrypted text: \t\t%016llx", cipherText);
+	printf("\n");
+
+	printf("expected encrypted text: \t%016llx", expectedCipherText);
+	printf("\n");
+
+	printf("decrypted text: \t\t%016llx", decrypted);
+	printf("\n");
 
 	assert(text == decrypted);
 }

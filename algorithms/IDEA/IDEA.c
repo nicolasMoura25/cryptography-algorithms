@@ -42,40 +42,6 @@ static unsigned __int16 mul(unsigned __int16 a, unsigned __int16 b)
 */
 static unsigned __int16 inv(unsigned __int16 x)
 {
-	/*long n1 = 65537, n2 = x, r, b1 = 0, b2, t;
-
-	if (xin == 0)
-	{
-		b2 = 0;
-	}
-	else
-	{
-		b2 = 1;
-
-		do
-		{
-			r = n1 % n2;
-			if (r == 0)
-			{
-				if (b2 < 0)
-				{
-					b2 += n1;
-				}
-			}
-			else
-			{
-				t = b1 - ((n1 - r) / n2) * b2;
-				n1 = n2;
-				n2 = r;
-				b1 = b2;
-				b2 = t;
-			}
-		}
-		while (r != 0);
-	}
-
-	return (unsigned __int16)b2;*/
-
 	unsigned __int16 t0 = 1, t1;
 	unsigned __int16 q, y;
 
@@ -240,6 +206,7 @@ void IDEA_decrypt(unsigned __int16* encryptedBlock, unsigned __int16* key, unsig
 
 void IDEA_main(void)
 {
+	int i;
 	unsigned __int16 key[8];
 	unsigned __int16 text[4];
 	unsigned __int16 cipherText[4];
@@ -247,14 +214,13 @@ void IDEA_main(void)
 	unsigned __int16 decryptedText[4];
 
 	// key 12345678
-	for (int i = 1; i <= 8; i++)
+	for (i = 1; i <= 8; i++)
 	{
 		key[i - 1] = i;
 	}
 
 	// text 0123
-	int value = 1;
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		text[i] = i;
 	}
@@ -269,35 +235,35 @@ void IDEA_main(void)
 	IDEA_decrypt(cipherText, key, decryptedText);
 
 	printf("key: \t\t\t\t");
-	for (int i = 0; i < 8; i++)
+	for (i = 0; i < 8; i++)
 	{
 		printf("%08x ", key[i]);
 	}
 	printf("\n");
 
 	printf("text: \t\t\t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", text[i]);
 	}
 	printf("\n");
 
 	printf("encrypted text: \t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", cipherText[i]);
 	}
 	printf("\n");
 
 	printf("expected encrypted text: \t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", expectedCipherText[i]);
 	}
 	printf("\n");
 
 	printf("decrypted text: \t\t");
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		printf("%08x ", decryptedText[i]);
 	}

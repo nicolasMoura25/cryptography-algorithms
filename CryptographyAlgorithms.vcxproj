@@ -143,6 +143,7 @@
     <ClCompile Include="algorithms\GOST\GOST.c" />
     <ClCompile Include="algorithms\IDEA\IDEA.c" />
     <ClCompile Include="algorithms\NOEKEON\NOEKEON.c" />
+    <ClCompile Include="algorithms\PRESENT\PRESENT.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="algorithms\GOST\GOST.h" />
     <ClInclude Include="algorithms\IDEA\IDEA.h" />
     <ClInclude Include="algorithms\NOEKEON\NOEKEON.h" />
+    <ClInclude Include="algorithms\PRESENT\PRESENT.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
