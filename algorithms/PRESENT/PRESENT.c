@@ -10,6 +10,10 @@
 * This is an implementation of the cipher algorithm PRESENT
 *
 * Implementation References:
+* - https://www.iacr.org/archive/ches2007/47270450/47270450.pdf
+* - https://github.com/kurtfu/present
+* - https://www.oryx-embedded.com/doc/present_8c_source.html
+* - https://github.com/Pepton21/present-cipher
 */
 
 #define NR_ROUNDS 31
@@ -63,7 +67,6 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 			keyHigh = (keyHigh & 0x0fff) | (temp << 12);
 
 			// round_counter value i is exclusive - ored with bits k19 k18 k17 k16 k15
-			// with the least significant bit of round_counter
 			keyLow ^= (unsigned __int64)i << 15;
 
 			// save subkey with 64 leftmost bits of the key
@@ -107,6 +110,17 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 	}
 }
 
+/*
+	Encryption order:
+
+	for round = 0 to 30 do
+		addRoundKey(state, Ki)
+		sBoxLayer(state)
+		pLayer(state)
+	end for
+
+	addRoundKey(state, k31)
+*/
 void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned __int16* out)
 {
 	unsigned __int8 i;
@@ -122,14 +136,18 @@ void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned 
 
 	for (round = 0; round < NR_ROUNDS; round++)
 	{
-		// add key
+		// add round key
 		state ^= context->roundKeys[round];
 
 		// sbox substitution layer
+		// divide state into 16 parts of 4 bits and substitute these parts
+		// according to the sbox
+		// in this case we are dividing in 8 parts in the loop, but inside the loop
+		// splitting into high and low parts
 		temp = 0;
 		for (i = 0; i < 8; i++)
 		{
-			unsigned __int8 pos = (state >> (8 * (7 - i)));
+			unsigned __int8 pos = (unsigned __int8)(state >> (8 * (7 - i)));
 			unsigned __int8 highNybble = sbox[(pos >> 4) & 0x0f];
 			unsigned __int8 lowNybble = sbox[pos & 0x0f];
 
@@ -140,26 +158,38 @@ void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		}
 		state = temp;
 
-		//permutation layer
+		// permutation layer
+		// change order of all bits according to the permutation table
 		temp = 0;
 		for (i = 0; i < 64; i++)
 		{
 			unsigned __int8 distance = 63 - i;
-			temp |= ((state >> distance & 0x1) << 63 - p[i]);
+			temp |= ((state >> distance & 0x1) << (63 - p[i]));
 		}
 		state = temp;
 	}
 
-	// add last key
+	// add last round key
 	state ^= context->roundKeys[round];
 
 	// copy state to output;
-	out[0] = state >> 48;
-	out[1] = state >> 32;
-	out[2] = state >> 16;
-	out[3] = state;
+	out[0] = (unsigned __int16)(state >> 48);
+	out[1] = (unsigned __int16)(state >> 32);
+	out[2] = (unsigned __int16)(state >> 16);
+	out[3] = (unsigned __int16)state;
 }
 
+/*
+	Decryption order:
+
+	for round = 31 to 1 do
+		addRoundKey(state, Ki)
+		inversePLayer(state)
+		inverseSBoxLayer(state)
+	end for
+
+	addRoundKey(state, k0)
+*/
 void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned __int16* out)
 {
 	unsigned __int8 i;
@@ -173,12 +203,15 @@ void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		| (unsigned __int64)block[2] << 16
 		| block[3];
 
+	// decrypt we run from last round key to the first one
 	for (round = NR_ROUNDS; round > 0; round--)
 	{
-		// add key
+		// add round key
 		state ^= context->roundKeys[round];
 
-		//permutation layer
+		// permutation layer
+		// change order of all bits according to the permutation table
+		// but in reverse order
 		temp = 0;
 		for (i = 0; i < 64; i++)
 		{
@@ -188,10 +221,14 @@ void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		state = temp;
 
 		// sbox substitution layer
+		// divide state into 16 parts of 4 bits and substitute these parts
+		// according to the inverse sbox
+		// in this case we are dividing in 8 parts in the loop, but inside the loop
+		// splitting into high and low parts
 		temp = 0;
 		for (i = 0; i < 8; i++)
 		{
-			unsigned __int8 pos = (state >> (8 * (7 - i)));
+			unsigned __int8 pos = (unsigned __int8)(state >> (8 * (7 - i)));
 			unsigned __int8 highNybble = isbox[(pos >> 4) & 0x0f];
 			unsigned __int8 lowNybble = isbox[pos & 0x0f];
 
@@ -207,10 +244,10 @@ void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned 
 	state ^= context->roundKeys[round];
 
 	// copy state to output;
-	out[0] = state >> 48;
-	out[1] = state >> 32;
-	out[2] = state >> 16;
-	out[3] = state;
+	out[0] = (unsigned __int16)(state >> 48);
+	out[1] = (unsigned __int16)(state >> 32);
+	out[2] = (unsigned __int16)(state >> 16);
+	out[3] = (unsigned __int16)state;
 }
 
 void PRESENT_main(void)
@@ -236,10 +273,10 @@ void PRESENT_main(void)
 	key[7] = 0x0000;
 
 	// text 00000000 00000000
-	text[0] = 0x000a;
-	text[1] = 0x000b;
-	text[2] = 0x000c;
-	text[3] = 0x000d;
+	text[0] = 0x0000;
+	text[1] = 0x0000;
+	text[2] = 0x0000;
+	text[3] = 0x0000;
 
 	// expected encryption text 5579C138 7B228445
 	expectedCipherText[0] = 0x5579;
@@ -292,6 +329,12 @@ void PRESENT_main(void)
 	printf("\n");
 
 	// *** 128-bits key test ***
+
+	// expected encryption text 04bdd5f4 eaefcc19
+	expectedCipherText[0] = 0x04bd;
+	expectedCipherText[1] = 0xd5f4;
+	expectedCipherText[2] = 0xeaef;
+	expectedCipherText[3] = 0xcc19;
 
 	PRESENT_init(&context, key, 128);
 
