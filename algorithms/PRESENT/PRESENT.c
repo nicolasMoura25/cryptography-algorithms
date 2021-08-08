@@ -260,7 +260,7 @@ void PRESENT_main(void)
 	unsigned __int16 expectedCipherText[4];
 	unsigned __int16 decryptedText[4];
 
-	// test for 80-bit key
+	// test for 80-bits key
 
 	// key 00000000 00000000 0000
 	key[0] = 0x0000;
