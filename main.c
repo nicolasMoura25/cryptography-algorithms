@@ -5,6 +5,7 @@
 #include "algorithms/IDEA/IDEA.h"
 #include "algorithms/PRESENT/PRESENT.h"
 #include "algorithms/CAMELLIA/CAMELLIA.h"
+#include "algorithms/SPECK/SPECK.h"
 
 int main()
 {
@@ -13,7 +14,8 @@ int main()
 	//NOEKEON_main();
 	//IDEA_main();
 	//PRESENT_main();
-	CAMELLIA_main();
+	//CAMELLIA_main();
+	SPECK_main();
 
 	return 0;
 }

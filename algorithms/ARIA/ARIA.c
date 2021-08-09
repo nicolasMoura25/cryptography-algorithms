@@ -507,6 +507,8 @@ void ARIA_main(void)
 	ARIA_encrypt(text, key, cipherText);
 	ARIA_decrypt(cipherText, key, decryptedText);
 
+	printf("\nARIA \n\n");
+
 	printf("key: \t\t\t\t");
 	for (i = 0; i < 4; i++)
 	{
@@ -541,9 +543,4 @@ void ARIA_main(void)
 		printf("%08x ", decryptedText[i]);
 	}
 	printf("\n");
-
-	assert(text[0] == decryptedText[0]);
-	assert(text[1] == decryptedText[1]);
-	assert(text[2] == decryptedText[2]);
-	assert(text[3] == decryptedText[3]);
 }

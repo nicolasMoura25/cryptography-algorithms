@@ -138,6 +138,8 @@ void GOST_main(void)
 	unsigned __int64 cipherText = GOST_encrypt(text, key);
 	unsigned __int64 decrypted = GOST_decrypt(cipherText, key);
 
+	printf("\nGOST \n\n");
+
 	printf("key: \t\t\t\t");
 	for (i = 0; i < 8; i++)
 	{
@@ -156,6 +158,4 @@ void GOST_main(void)
 
 	printf("decrypted text: \t\t%016llx", decrypted);
 	printf("\n");
-
-	assert(text == decrypted);
 }
