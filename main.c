@@ -6,6 +6,7 @@
 #include "algorithms/PRESENT/PRESENT.h"
 #include "algorithms/CAMELLIA/CAMELLIA.h"
 #include "algorithms/SPECK/SPECK.h"
+#include "algorithms/SIMON/SIMON.h"
 
 int main()
 {
@@ -15,7 +16,8 @@ int main()
 	//IDEA_main();
 	//PRESENT_main();
 	//CAMELLIA_main();
-	SPECK_main();
+	//SPECK_main();
+	SIMON_main();
 
 	return 0;
 }
