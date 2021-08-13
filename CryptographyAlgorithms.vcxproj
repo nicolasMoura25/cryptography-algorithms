@@ -142,6 +142,7 @@
     <ClCompile Include="algorithms\ARIA\ARIA.c" />
     <ClCompile Include="algorithms\CAMELLIA\CAMELLIA.c" />
     <ClCompile Include="algorithms\GOST\GOST.c" />
+    <ClCompile Include="algorithms\HIGHT\HIGHT.c" />
     <ClCompile Include="algorithms\IDEA\IDEA.c" />
     <ClCompile Include="algorithms\NOEKEON\NOEKEON.c" />
     <ClCompile Include="algorithms\PRESENT\PRESENT.c" />
@@ -153,6 +154,7 @@
     <ClInclude Include="algorithms\ARIA\ARIA.h" />
     <ClInclude Include="algorithms\CAMELLIA\CAMELLIA.h" />
     <ClInclude Include="algorithms\GOST\GOST.h" />
+    <ClInclude Include="algorithms\HIGHT\HIGHT.h" />
     <ClInclude Include="algorithms\IDEA\IDEA.h" />
     <ClInclude Include="algorithms\NOEKEON\NOEKEON.h" />
     <ClInclude Include="algorithms\PRESENT\PRESENT.h" />
