@@ -13,6 +13,7 @@
 * - https://www.iacr.org/archive/ches2006/04/04.pdf
 * - https://datatracker.ietf.org/doc/html/draft-kisa-hight-00#section-3.2
 * - https://github.com/ilwoong/crypto-primitives/tree/master/hight
+* - https://github.com/ssrini14/Cryptography/blob/master/code/java/HIGHT.java
 */
 
 #define NR_ROUNDS 32

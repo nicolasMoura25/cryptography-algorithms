@@ -8,6 +8,7 @@
 #include "algorithms/SPECK/SPECK.h"
 #include "algorithms/SIMON/SIMON.h"
 #include "algorithms/HIGHT/HIGHT.h"
+#include "algorithms/SEED/SEED.h"
 
 int main()
 {
@@ -19,7 +20,8 @@ int main()
 	//CAMELLIA_main();
 	//SPECK_main();
 	//SIMON_main();
-	HIGHT_main();
+	//HIGHT_main();
+	SEED_main();
 
 	return 0;
 }

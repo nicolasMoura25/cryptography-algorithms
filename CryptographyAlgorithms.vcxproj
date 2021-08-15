@@ -146,6 +146,7 @@
     <ClCompile Include="algorithms\IDEA\IDEA.c" />
     <ClCompile Include="algorithms\NOEKEON\NOEKEON.c" />
     <ClCompile Include="algorithms\PRESENT\PRESENT.c" />
+    <ClCompile Include="algorithms\SEED\SEED.c" />
     <ClCompile Include="algorithms\SIMON\SIMON.c" />
     <ClCompile Include="algorithms\SPECK\SPECK.c" />
     <ClCompile Include="main.c" />
@@ -158,6 +159,7 @@
     <ClInclude Include="algorithms\IDEA\IDEA.h" />
     <ClInclude Include="algorithms\NOEKEON\NOEKEON.h" />
     <ClInclude Include="algorithms\PRESENT\PRESENT.h" />
+    <ClInclude Include="algorithms\SEED\SEED.h" />
     <ClInclude Include="algorithms\SIMON\SIMON.h" />
     <ClInclude Include="algorithms\SPECK\SPECK.h" />
   </ItemGroup>
