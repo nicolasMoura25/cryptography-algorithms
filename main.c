@@ -13,7 +13,7 @@
 int main()
 {
 	//GOST_main();
-	//ARIA_main();
+	ARIA_main();
 	//NOEKEON_main();
 	//IDEA_main();
 	//PRESENT_main();
@@ -21,7 +21,7 @@ int main()
 	//SPECK_main();
 	//SIMON_main();
 	//HIGHT_main();
-	SEED_main();
+	//SEED_main();
 
 	return 0;
 }

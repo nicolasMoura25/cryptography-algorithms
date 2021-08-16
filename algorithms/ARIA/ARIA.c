@@ -23,40 +23,6 @@ unsigned __int32 CK3[4] = { 0xdb92371d, 0x2126e970, 0x03249775, 0x04e8c90e };
 // registers
 unsigned __int32 KR[4] = { 0, 0, 0, 0 };
 
-unsigned __int32 W0[4];
-unsigned __int32 W1[4];
-unsigned __int32 W2[4];
-unsigned __int32 W3[4];
-
-// encryption keys and decryptions keys
-unsigned __int32 ek1[4];
-unsigned __int32 ek2[4];
-unsigned __int32 ek3[4];
-unsigned __int32 ek4[4];
-unsigned __int32 ek5[4];
-unsigned __int32 ek6[4];
-unsigned __int32 ek7[4];
-unsigned __int32 ek8[4];
-unsigned __int32 ek9[4];
-unsigned __int32 ek10[4];
-unsigned __int32 ek11[4];
-unsigned __int32 ek12[4];
-unsigned __int32 ek13[4];
-
-unsigned __int32 dk1[4];
-unsigned __int32 dk2[4];
-unsigned __int32 dk3[4];
-unsigned __int32 dk4[4];
-unsigned __int32 dk5[4];
-unsigned __int32 dk6[4];
-unsigned __int32 dk7[4];
-unsigned __int32 dk8[4];
-unsigned __int32 dk9[4];
-unsigned __int32 dk10[4];
-unsigned __int32 dk11[4];
-unsigned __int32 dk12[4];
-unsigned __int32 dk13[4];
-
 // S-Boxes
 const unsigned __int8 SB1[256] = {
 								0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
@@ -142,7 +108,7 @@ static void XOR_128(unsigned __int32* y, unsigned __int32* x)
 	y[3] ^= x[3];
 }
 
-static void MOV_128(unsigned __int32* y, unsigned __int32* x)
+static void MOV_128(unsigned __int32* y, const unsigned __int32* x)
 {
 	y[0] = x[0];
 	y[1] = x[1];
@@ -321,7 +287,11 @@ static void FE(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* outp
 	A(y, output);
 }
 
-static void generateEncryptionKeys(void)
+static void generateEncryptionKeys(unsigned __int32* W0,
+								   unsigned __int32* W1,
+								   unsigned __int32* W2,
+								   unsigned __int32* W3,
+								   unsigned __int32 eks[][4])
 {
 	/*
 		ek1  = W0 ^(W1 >>> 19),
@@ -340,44 +310,44 @@ static void generateEncryptionKeys(void)
 	*/
 	unsigned __int32 temp[4];
 
-	ROR_128(ek1, W1, 19);
-	XOR_128(ek1, W0);
-	ROR_128(ek2, W2, 19);
-	XOR_128(ek2, W1);
-	ROR_128(ek3, W3, 19);
-	XOR_128(ek3, W2);
-	ROR_128(ek4, W0, 19);
-	XOR_128(ek4, W3);
-	ROR_128(ek5, W1, 31);
-	XOR_128(ek5, W0);
-	ROR_128(ek6, W2, 31);
-	XOR_128(ek6, W1);
-	ROR_128(ek7, W3, 31);
-	XOR_128(ek7, W2);
-	ROR_128(ek8, W0, 31);
-	XOR_128(ek8, W3);
+	ROR_128(eks[0], W1, 19);
+	XOR_128(eks[0], W0);
+	ROR_128(eks[1], W2, 19);
+	XOR_128(eks[1], W1);
+	ROR_128(eks[2], W3, 19);
+	XOR_128(eks[2], W2);
+	ROR_128(eks[3], W0, 19);
+	XOR_128(eks[3], W3);
+	ROR_128(eks[4], W1, 31);
+	XOR_128(eks[4], W0);
+	ROR_128(eks[5], W2, 31);
+	XOR_128(eks[5], W1);
+	ROR_128(eks[6], W3, 31);
+	XOR_128(eks[6], W2);
+	ROR_128(eks[7], W0, 31);
+	XOR_128(eks[7], W3);
 
-	ROL_128(ek9, W1, 31);
-	ROL_128(temp, ek9, 30);
-	MOV_128(ek9, temp);
-	XOR_128(ek9, W0);
-	ROL_128(ek10, W2, 31);
-	ROL_128(temp, ek10, 30);
-	MOV_128(ek10, temp);
-	XOR_128(ek10, W1);
-	ROL_128(ek11, W3, 31);
-	ROL_128(temp, ek11, 30);
-	MOV_128(ek11, temp);
-	XOR_128(ek11, W2);
-	ROL_128(ek12, W0, 31);
-	ROL_128(temp, ek12, 30);
-	MOV_128(ek12, temp);
-	XOR_128(ek12, W3);
-	ROL_128(ek13, W1, 31);
-	XOR_128(ek13, W0);
+	ROL_128(eks[8], W1, 31);
+	ROL_128(temp, eks[8], 30);
+	MOV_128(eks[8], temp);
+	XOR_128(eks[8], W0);
+	ROL_128(eks[9], W2, 31);
+	ROL_128(temp, eks[9], 30);
+	MOV_128(eks[9], temp);
+	XOR_128(eks[9], W1);
+	ROL_128(eks[10], W3, 31);
+	ROL_128(temp, eks[10], 30);
+	MOV_128(eks[10], temp);
+	XOR_128(eks[10], W2);
+	ROL_128(eks[11], W0, 31);
+	ROL_128(temp, eks[11], 30);
+	MOV_128(eks[11], temp);
+	XOR_128(eks[11], W3);
+	ROL_128(eks[12], W1, 31);
+	XOR_128(eks[12], W0);
 }
 
-static void generateDecryptionKeys(void)
+static void generateDecryptionKeys(unsigned __int32 eks[][4], unsigned __int32 dks[][4])
 {
 	/*
 		n = 12
@@ -389,23 +359,29 @@ static void generateDecryptionKeys(void)
 		dk{n}= A(ek2),
 		dk{n+1}= ek1.
 	*/
-	MOV_128(dk1, ek13);
-	A(ek12, dk2);
-	A(ek11, dk3);
-	A(ek10, dk4);
-	A(ek9, dk5);
-	A(ek8, dk6);
-	A(ek7, dk7);
-	A(ek6, dk8);
-	A(ek5, dk9);
-	A(ek4, dk10);
-	A(ek3, dk11);
-	A(ek2, dk12);
-	MOV_128(dk13, ek1);
+	MOV_128(dks[0], eks[12]);
+	A(eks[11], dks[1]);
+	A(eks[10], dks[2]);
+	A(eks[9], dks[3]);
+	A(eks[8], dks[4]);
+	A(eks[7], dks[5]);
+	A(eks[6], dks[6]);
+	A(eks[5], dks[7]);
+	A(eks[4], dks[8]);
+	A(eks[3], dks[9]);
+	A(eks[2], dks[10]);
+	A(eks[1], dks[11]);
+	MOV_128(dks[12], eks[0]);
 }
 
-void ARIA_encrypt(unsigned __int32* block, unsigned __int32* key, unsigned __int32* P)
+void ARIA_init(AriaContext* context, const unsigned __int32* key)
 {
+	// generate encryption and decryptions keys
+	unsigned __int32 W0[4];
+	unsigned __int32 W1[4];
+	unsigned __int32 W2[4];
+	unsigned __int32 W3[4];
+
 	// Init registers
 	MOV_128(W0, key);
 
@@ -418,67 +394,58 @@ void ARIA_encrypt(unsigned __int32* block, unsigned __int32* key, unsigned __int
 	FO(W2, CK3, W3);
 	XOR_128(W3, W1);
 
-	generateEncryptionKeys();
-
-	// encryption rounds
-	FO(block, ek1, P);
-	FE(P, ek2, P);
-	FO(P, ek3, P);
-	FE(P, ek4, P);
-	FO(P, ek5, P);
-	FE(P, ek6, P);
-	FO(P, ek7, P);
-	FE(P, ek8, P);
-	FO(P, ek9, P);
-	FE(P, ek10, P);
-	FO(P, ek11, P);
-
-	// C = SL2(P11 ^ ek12) ^ ek13;
-	XOR_128(P, ek12);
-
-	SL2(P, P);
-
-	XOR_128(P, ek13);
+	generateEncryptionKeys(W0, W1, W2, W3, context->eks);
+	generateDecryptionKeys(context->eks, context->dks);
 }
 
-void ARIA_decrypt(unsigned __int32* block, unsigned __int32* key, unsigned __int32* P)
+void ARIA_encrypt(AriaContext* context, unsigned __int32* block, unsigned __int32* P)
 {
-	// Init registers
-	MOV_128(W0, key);
+	// encryption rounds
+	FO(block, context->eks[0], P);
+	FE(P, context->eks[1], P);
+	FO(P, context->eks[2], P);
+	FE(P, context->eks[3], P);
+	FO(P, context->eks[4], P);
+	FE(P, context->eks[5], P);
+	FO(P, context->eks[6], P);
+	FE(P, context->eks[7], P);
+	FO(P, context->eks[8], P);
+	FE(P, context->eks[9], P);
+	FO(P, context->eks[10], P);
 
-	FO(W0, CK1, W1);
-	XOR_128(W1, KR);
-
-	FE(W1, CK2, W2);
-	XOR_128(W2, W0);
-
-	FO(W2, CK3, W2);
-	XOR_128(W3, W1);
-
-	generateDecryptionKeys();
-
-	FO(block, dk1, P);
-	FE(P, dk2, P);
-	FO(P, dk3, P);
-	FE(P, dk4, P);
-	FO(P, dk5, P);
-	FE(P, dk6, P);
-	FO(P, dk7, P);
-	FE(P, dk8, P);
-	FO(P, dk9, P);
-	FE(P, dk10, P);
-	FO(P, dk11, P);
-
-	// C = SL2(P11 ^ dk12) ^ dk13;
-	XOR_128(P, dk12);
+	// C = SL2(P11 ^ ek12) ^ ek13;
+	XOR_128(P, context->eks[11]);
 
 	SL2(P, P);
 
-	XOR_128(P, dk13);
+	XOR_128(P, context->eks[12]);
+}
+
+void ARIA_decrypt(AriaContext* context, unsigned __int32* block, unsigned __int32* P)
+{
+	FO(block, context->dks[0], P);
+	FE(P, context->dks[1], P);
+	FO(P, context->dks[2], P);
+	FE(P, context->dks[3], P);
+	FO(P, context->dks[4], P);
+	FE(P, context->dks[5], P);
+	FO(P, context->dks[6], P);
+	FE(P, context->dks[7], P);
+	FO(P, context->dks[8], P);
+	FE(P, context->dks[9], P);
+	FO(P, context->dks[10], P);
+
+	// C = SL2(P11 ^ dk12) ^ dk13;
+	XOR_128(P, context->dks[11]);
+
+	SL2(P, P);
+
+	XOR_128(P, context->dks[12]);
 }
 
 void ARIA_main(void)
 {
+	AriaContext context;
 	int i;
 	unsigned __int32 key[4];
 	unsigned __int32 text[4];
@@ -504,8 +471,9 @@ void ARIA_main(void)
 	expectedCipherText[2] = 0x9da95f3b;
 	expectedCipherText[3] = 0xe6451778;
 
-	ARIA_encrypt(text, key, cipherText);
-	ARIA_decrypt(cipherText, key, decryptedText);
+	ARIA_init(&context, key);
+	ARIA_encrypt(&context, text, cipherText);
+	ARIA_decrypt(&context, cipherText, decryptedText);
 
 	printf("\nARIA \n\n");
 
