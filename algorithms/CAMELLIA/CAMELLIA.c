@@ -486,7 +486,7 @@ void CAMELLIA_main(void)
 	unsigned __int64 expectedCipherText[2];
 	unsigned __int64 decryptedText[2];
 
-	// test for 128-bits key
+	// *** test for 128-bits key ***
 
 	// key 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
 	key[0] = 0x0123456789abcdef;
