@@ -182,30 +182,25 @@ static void idea(unsigned __int16* block, unsigned __int16* Z, unsigned __int16*
 	out[3] = mul(*Z++, x3);
 }
 
-void IDEA_encrypt(unsigned __int16* block, unsigned __int16* key, unsigned __int16* out)
+void IDEA_init(IdeaContext* context, unsigned __int16* key)
 {
-	unsigned __int16 Z[52];
-
-	generateEncryptionKeys(key, Z);
-
-	idea(block, Z, out);
+	generateEncryptionKeys(key, context->encryptionKeys);
+	generateDecryptionKeys(context->encryptionKeys, context->decryptionKeys);
 }
 
-void IDEA_decrypt(unsigned __int16* encryptedBlock, unsigned __int16* key, unsigned __int16* out)
+void IDEA_encrypt(IdeaContext* context, unsigned __int16* block, unsigned __int16* out)
 {
-	unsigned __int16 Z1[52];
-	unsigned __int16 Z2[52];
+	idea(block, context->encryptionKeys, out);
+}
 
-	// we need to generate encryption keys and invert them
-	// in order to get the decryption keys
-	generateEncryptionKeys(key, Z1);
-	generateDecryptionKeys(Z1, Z2);
-
-	idea(encryptedBlock, Z2, out);
+void IDEA_decrypt(IdeaContext* context, unsigned __int16* encryptedBlock, unsigned __int16* out)
+{
+	idea(encryptedBlock, context->decryptionKeys, out);
 }
 
 void IDEA_main(void)
 {
+	IdeaContext context;
 	int i;
 	unsigned __int16 key[8];
 	unsigned __int16 text[4];
@@ -231,8 +226,9 @@ void IDEA_main(void)
 	expectedCipherText[2] = 408;
 	expectedCipherText[3] = 28133;
 
-	IDEA_encrypt(text, key, cipherText);
-	IDEA_decrypt(cipherText, key, decryptedText);
+	IDEA_init(&context, key);
+	IDEA_encrypt(&context, text, cipherText);
+	IDEA_decrypt(&context, cipherText, decryptedText);
 
 	printf("\nIDEA \n\n");
 

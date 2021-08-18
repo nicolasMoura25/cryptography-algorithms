@@ -13,9 +13,9 @@
 int main()
 {
 	//GOST_main();
-	ARIA_main();
+	//ARIA_main();
 	//NOEKEON_main();
-	//IDEA_main();
+	IDEA_main();
 	//PRESENT_main();
 	//CAMELLIA_main();
 	//SPECK_main();
