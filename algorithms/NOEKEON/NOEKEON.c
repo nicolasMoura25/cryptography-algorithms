@@ -82,7 +82,7 @@ static void gamma(uint32_t* a)
 	a[0] ^= a[2] & a[1];
 }
 
-static void theta(uint32_t* k, uint32_t* a)
+static void theta(const uint32_t* k, uint32_t* a)
 {
 	uint32_t temp = a[0] ^ a[2];
 	temp ^= ROR_32(temp, 8) ^ ROL_32(temp, 8);
@@ -102,7 +102,7 @@ static void theta(uint32_t* k, uint32_t* a)
 	a[2] ^= temp;
 }
 
-static void round(uint32_t* key, uint32_t* block, uint32_t c1, uint32_t c2)
+static void NOEKEON_round(uint32_t* key, uint32_t* block, uint32_t c1, uint32_t c2)
 {
 	block[0] ^= c1;
 	theta(key, block);
@@ -117,7 +117,7 @@ void NOEKEON_encrypt(uint32_t* block, uint32_t* key, uint32_t* encryptdBlock)
 	MOV_128(encryptdBlock, block);
 	for (int i = 0; i < NR_ROUNDS; i++)
 	{
-		round(key, encryptdBlock, RC[i], 0);
+		NOEKEON_round(key, encryptdBlock, RC[i], 0);
 	}
 
 	encryptdBlock[0] ^= RC[NR_ROUNDS];
@@ -135,7 +135,7 @@ void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decrypte
 
 	for (int i = NR_ROUNDS; i > 0; i--)
 	{
-		round(workingKey, decryptedBlock, 0, RC[i]);
+		NOEKEON_round(workingKey, decryptedBlock, 0, RC[i]);
 	}
 
 	theta(workingKey, decryptedBlock);

@@ -35,12 +35,12 @@ static uint8_t ROL_8(uint8_t x, uint8_t n)
 	return x << n | x >> (8 - n);
 }
 
-static uint8_t ROR_8(uint8_t x, uint8_t n)
+/*static uint8_t ROR_8(uint8_t x, uint8_t n)
 {
 	return x >> n | x << (8 - n);
 }
 
-/*static void constantGeneration()
+static void constantGeneration()
 {
 	int i;
 	uint8_t d[128];
@@ -62,7 +62,7 @@ static uint8_t f1(uint8_t x)
 	return ROL_8(x, 3) ^ ROL_8(x, 4) ^ ROL_8(x, 6);
 }
 
-static void round(uint8_t* x,
+static void HIGHT_round(uint8_t* x,
 				  uint8_t subkey0,
 				  uint8_t subkey1,
 				  uint8_t subkey2,
@@ -81,7 +81,7 @@ static void round(uint8_t* x,
 	x[0] = temp7 ^ (f0(temp6) + subkey3);
 }
 
-static void inverse_round(uint8_t* x,
+static void HIGHT_inverse_round(uint8_t* x,
 						  uint8_t subkey0,
 						  uint8_t subkey1,
 						  uint8_t subkey2,
@@ -147,7 +147,7 @@ void HIGHT_encrypt(HightContext* context, uint8_t* block, uint8_t* out)
 	// Rounds
 	for (r = 0; r < NR_ROUNDS; r++)
 	{
-		round(x, context->subkeys[subkey], context->subkeys[subkey + 1], context->subkeys[subkey + 2], context->subkeys[subkey + 3]);
+		HIGHT_round(x, context->subkeys[subkey], context->subkeys[subkey + 1], context->subkeys[subkey + 2], context->subkeys[subkey + 3]);
 		subkey += 4;
 	}
 
@@ -181,7 +181,7 @@ void HIGHT_decrypt(HightContext* context, uint8_t* block, uint8_t* out)
 	// Rounds
 	for (r = 0; r < NR_ROUNDS; r++)
 	{
-		inverse_round(x, context->subkeys[subkey], context->subkeys[subkey - 1], context->subkeys[subkey - 2], context->subkeys[subkey - 3]);
+		HIGHT_inverse_round(x, context->subkeys[subkey], context->subkeys[subkey - 1], context->subkeys[subkey - 2], context->subkeys[subkey - 3]);
 		subkey -= 4;
 	}
 

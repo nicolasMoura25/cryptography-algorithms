@@ -12,16 +12,16 @@
 
 int main()
 {
-	//GOST_main();
-	//ARIA_main();
-	//NOEKEON_main();
+	GOST_main();
+	ARIA_main();
+	NOEKEON_main();
 	IDEA_main();
-	//PRESENT_main();
-	//CAMELLIA_main();
-	//SPECK_main();
-	//SIMON_main();
-	//HIGHT_main();
-	//SEED_main();
+	PRESENT_main();
+	CAMELLIA_main();
+	SPECK_main();
+	SIMON_main();
+	HIGHT_main();
+	SEED_main();
 
 	return 0;
 }

@@ -34,7 +34,7 @@ const uint8_t s_box[8][16] = {
 									{ 1, 15, 13, 0, 5, 7, 10, 4, 9, 2, 3, 14, 6, 11, 8, 12 }
 };
 
-void round(uint32_t xi)
+void GOST_round(uint32_t xi)
 {
 	CM1 = (N1 + xi) % 4294967296; // 2^32
 
@@ -83,14 +83,14 @@ uint64_t GOST_encrypt(uint64_t block, uint32_t* key)
 	{
 		for (int i = 0; i <= 7; i++)
 		{
-			round(key[i]);
+			GOST_round(key[i]);
 		}
 	}
 
 	// last 8 rounds
 	for (int i = 7; i >= 0; i--)
 	{
-		round(key[i]);
+		GOST_round(key[i]);
 	}
 
 	uint64_t tc = N1;
@@ -106,7 +106,7 @@ uint64_t GOST_decrypt(uint64_t encryptedBlock, uint32_t* key)
 	// last 8 rounds
 	for (int i = 0; i <= 7; i++)
 	{
-		round(key[i]);
+		GOST_round(key[i]);
 	}
 
 	// first 24 rounds
@@ -114,7 +114,7 @@ uint64_t GOST_decrypt(uint64_t encryptedBlock, uint32_t* key)
 	{
 		for (int i = 7; i >= 0; i--)
 		{
-			round(key[i]);
+			GOST_round(key[i]);
 		}
 	}
 
