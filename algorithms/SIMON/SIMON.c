@@ -15,23 +15,23 @@
 */
 
 // Rotate Left circular shift 32 bits
-static unsigned __int64 ROL_64(unsigned __int64 x, unsigned __int32 n)
+static uint64_t ROL_64(uint64_t x, uint32_t n)
 {
 	return x << n | x >> (64 - n);
 }
 
 // Rotate Right circular shift 32 bits
-static unsigned __int64 ROR_64(unsigned __int64 x, unsigned __int32 n)
+static uint64_t ROR_64(uint64_t x, uint32_t n)
 {
 	return x >> n | x << (64 - n);
 }
 
-static unsigned __int64 f(unsigned __int64 x)
+static uint64_t f(uint64_t x)
 {
 	return (ROL_64(x, 1) & ROL_64(x, 8)) ^ ROL_64(x, 2);
 }
 
-static void R2(unsigned __int64* x, unsigned __int64* y, unsigned __int64 k, unsigned __int64 l)
+static void R2(uint64_t* x, uint64_t* y, uint64_t k, uint64_t l)
 {
 	*y ^= f(*x);
 	*y ^= k;
@@ -39,11 +39,11 @@ static void R2(unsigned __int64* x, unsigned __int64* y, unsigned __int64 k, uns
 	*x ^= l;
 }
 
-void SIMON_init(SimonContext* context, unsigned __int64* key, unsigned __int16 keyLen)
+void SIMON_init(SimonContext* context, uint64_t* key, uint16_t keyLen)
 {
-	unsigned __int64 c = 0xfffffffffffffffcLL;
-	unsigned __int64 z;
-	unsigned __int64 i;
+	uint64_t c = 0xfffffffffffffffcLL;
+	uint64_t z;
+	uint64_t i;
 
 	if (keyLen == 128)
 	{
@@ -106,12 +106,12 @@ void SIMON_init(SimonContext* context, unsigned __int64* key, unsigned __int16 k
 	}
 }
 
-void SIMON_encrypt(SimonContext* context, unsigned __int64* block, unsigned __int64* out)
+void SIMON_encrypt(SimonContext* context, uint64_t* block, uint64_t* out)
 {
-	unsigned __int8 i;
-	unsigned __int64 x = block[0];
-	unsigned __int64 y = block[1];
-	unsigned __int64 t;
+	uint8_t i;
+	uint64_t x = block[0];
+	uint64_t y = block[1];
+	uint64_t t;
 
 	if (context->nrSubkeys == 69)
 	{
@@ -138,12 +138,12 @@ void SIMON_encrypt(SimonContext* context, unsigned __int64* block, unsigned __in
 	out[1] = y;
 }
 
-void SIMON_decrypt(SimonContext* context, unsigned __int64* block, unsigned __int64* out)
+void SIMON_decrypt(SimonContext* context, uint64_t* block, uint64_t* out)
 {
 	int i;
-	unsigned __int64 x = block[0];
-	unsigned __int64 y = block[1];
-	unsigned __int64 t;
+	uint64_t x = block[0];
+	uint64_t y = block[1];
+	uint64_t t;
 
 	if (context->nrSubkeys == 69)
 	{
@@ -174,11 +174,11 @@ void SIMON_main(void)
 {
 	SimonContext context;
 	int i;
-	unsigned __int64 key[4];
-	unsigned __int64 text[2];
-	unsigned __int64 cipherText[2];
-	unsigned __int64 expectedCipherText[2];
-	unsigned __int64 decryptedText[2];
+	uint64_t key[4];
+	uint64_t text[2];
+	uint64_t cipherText[2];
+	uint64_t expectedCipherText[2];
+	uint64_t decryptedText[2];
 
 	// test for 128-bits key
 

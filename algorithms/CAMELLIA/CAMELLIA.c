@@ -17,7 +17,7 @@
 * - https://github.com/Varbin/python-camellia/blob/master/src/_camellia_build/camellia.c
 */
 
-static const unsigned __int64 sigma[6] =
+static const uint64_t sigma[6] =
 {
 	0xA09E667F3BCC908B, // sigma 1
 	0xB67AE8584CAA73B2, // sigma 2
@@ -27,7 +27,7 @@ static const unsigned __int64 sigma[6] =
 	0xB05688C2B3E6C1FD  // sigma 6
 };
 
-static const unsigned __int8 sbox1[256] =
+static const uint8_t sbox1[256] =
 {
 	0x70, 0x82, 0x2C, 0xEC, 0xB3, 0x27, 0xC0, 0xE5, 0xE4, 0x85, 0x57, 0x35, 0xEA, 0x0C, 0xAE, 0x41,
 	0x23, 0xEF, 0x6B, 0x93, 0x45, 0x19, 0xA5, 0x21, 0xED, 0x0E, 0x4F, 0x4E, 0x1D, 0x65, 0x92, 0xBD,
@@ -48,7 +48,7 @@ static const unsigned __int8 sbox1[256] =
 };
 
 //Substitution table 2
-static const unsigned __int8 sbox2[256] =
+static const uint8_t sbox2[256] =
 {
    0xE0, 0x05, 0x58, 0xD9, 0x67, 0x4E, 0x81, 0xCB, 0xC9, 0x0B, 0xAE, 0x6A, 0xD5, 0x18, 0x5D, 0x82,
    0x46, 0xDF, 0xD6, 0x27, 0x8A, 0x32, 0x4B, 0x42, 0xDB, 0x1C, 0x9E, 0x9C, 0x3A, 0xCA, 0x25, 0x7B,
@@ -69,7 +69,7 @@ static const unsigned __int8 sbox2[256] =
 };
 
 //Substitution table 3
-static const unsigned __int8 sbox3[256] =
+static const uint8_t sbox3[256] =
 {
    0x38, 0x41, 0x16, 0x76, 0xD9, 0x93, 0x60, 0xF2, 0x72, 0xC2, 0xAB, 0x9A, 0x75, 0x06, 0x57, 0xA0,
    0x91, 0xF7, 0xB5, 0xC9, 0xA2, 0x8C, 0xD2, 0x90, 0xF6, 0x07, 0xA7, 0x27, 0x8E, 0xB2, 0x49, 0xDE,
@@ -90,7 +90,7 @@ static const unsigned __int8 sbox3[256] =
 };
 
 //Substitution table 4
-static const unsigned __int8 sbox4[256] =
+static const uint8_t sbox4[256] =
 {
    0x70, 0x2C, 0xB3, 0xC0, 0xE4, 0x57, 0xEA, 0xAE, 0x23, 0x6B, 0x45, 0xA5, 0xED, 0x4F, 0x1D, 0x92,
    0x86, 0xAF, 0x7C, 0x1F, 0x3E, 0xDC, 0x5E, 0x0B, 0xA6, 0x39, 0xD5, 0x5D, 0xD9, 0x5A, 0x51, 0x6C,
@@ -111,34 +111,34 @@ static const unsigned __int8 sbox4[256] =
 };
 
 // Rotate Left circular shift 32 bits
-static unsigned __int32 ROL_32(unsigned __int32 x, unsigned __int32 n)
+static uint32_t ROL_32(uint32_t x, uint32_t n)
 {
 	return x << n | x >> (32 - n);
 }
 
 // Rotate Left circular shift 128 bits
-void ROL_128(unsigned __int64* y, unsigned __int64* x, unsigned __int32 n)
+void ROL_128(uint64_t* y, uint64_t* x, uint32_t n)
 {
-	unsigned __int64 temp = x[0];
+	uint64_t temp = x[0];
 	y[0] = (x[0] << n) | (x[1] >> (64 - n));
 	y[1] = (x[1] << n) | (temp >> (64 - n));
 }
 
-unsigned __int64 F(unsigned __int64 F_IN, unsigned __int64 KE)
+uint64_t F(uint64_t F_IN, uint64_t KE)
 {
-	unsigned __int64 x;
-	unsigned __int8 t1, t2, t3, t4, t5, t6, t7, t8;
-	unsigned __int8 y1, y2, y3, y4, y5, y6, y7, y8;
+	uint64_t x;
+	uint8_t t1, t2, t3, t4, t5, t6, t7, t8;
+	uint8_t y1, y2, y3, y4, y5, y6, y7, y8;
 
 	x = F_IN ^ KE;
 	t1 = x >> 56;
-	t2 = (unsigned __int8)(x >> 48);
-	t3 = (unsigned __int8)(x >> 40);
-	t4 = (unsigned __int8)(x >> 32);
-	t5 = (unsigned __int8)(x >> 24);
-	t6 = (unsigned __int8)(x >> 16);
-	t7 = (unsigned __int8)(x >> 8);
-	t8 = (unsigned __int8)x;
+	t2 = (uint8_t)(x >> 48);
+	t3 = (uint8_t)(x >> 40);
+	t4 = (uint8_t)(x >> 32);
+	t5 = (uint8_t)(x >> 24);
+	t6 = (uint8_t)(x >> 16);
+	t7 = (uint8_t)(x >> 8);
+	t8 = (uint8_t)x;
 	t1 = sbox1[t1];
 	t2 = sbox2[t2];
 	t3 = sbox3[t3];
@@ -155,47 +155,47 @@ unsigned __int64 F(unsigned __int64 F_IN, unsigned __int64 KE)
 	y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
 	y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
 	y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
-	return ((unsigned __int64)y1 << 56) | ((unsigned __int64)y2 << 48) | ((unsigned __int64)y3 << 40) | ((unsigned __int64)y4 << 32) |
-		((unsigned __int64)y5 << 24) | ((unsigned __int64)y6 << 16) | ((unsigned __int64)y7 << 8) | y8;
+	return ((uint64_t)y1 << 56) | ((uint64_t)y2 << 48) | ((uint64_t)y3 << 40) | ((uint64_t)y4 << 32) |
+		((uint64_t)y5 << 24) | ((uint64_t)y6 << 16) | ((uint64_t)y7 << 8) | y8;
 }
 
-unsigned __int64 FL(unsigned __int64 FL_IN, unsigned __int64 KE)
+uint64_t FL(uint64_t FL_IN, uint64_t KE)
 {
-	unsigned __int32 x1, x2;
-	unsigned __int32 k1, k2;
+	uint32_t x1, x2;
+	uint32_t k1, k2;
 	x1 = FL_IN >> 32;
-	x2 = (unsigned __int32)FL_IN;
+	x2 = (uint32_t)FL_IN;
 	k1 = KE >> 32;
-	k2 = (unsigned __int32)KE;
+	k2 = (uint32_t)KE;
 	x2 = x2 ^ ROL_32((x1 & k1), 1);
 	x1 = x1 ^ (x2 | k2);
-	return ((unsigned __int64)x1 << 32) | x2;
+	return ((uint64_t)x1 << 32) | x2;
 }
 
-unsigned __int64 FLINV(unsigned __int64 FLINV_IN, unsigned __int64 KE)
+uint64_t FLINV(uint64_t FLINV_IN, uint64_t KE)
 {
-	unsigned __int32 y1, y2;
-	unsigned __int32 k1, k2;
+	uint32_t y1, y2;
+	uint32_t k1, k2;
 	y1 = FLINV_IN >> 32;
-	y2 = (unsigned __int32)FLINV_IN;
+	y2 = (uint32_t)FLINV_IN;
 	k1 = KE >> 32;
-	k2 = (unsigned __int32)KE;
+	k2 = (uint32_t)KE;
 	y1 = y1 ^ (y2 | k2);
 	y2 = y2 ^ ROL_32((y1 & k1), 1);
-	return ((unsigned __int64)y1 << 32) | y2;
+	return ((uint64_t)y1 << 32) | y2;
 }
 
-void CAMELLIA_init(CamelliaContext* context, const unsigned __int64* key, unsigned __int16 keyLen)
+void CAMELLIA_init(CamelliaContext* context, const uint64_t* key, uint16_t keyLen)
 {
-	unsigned __int8 i;
-	unsigned __int64 temp[2];
+	uint8_t i;
+	uint64_t temp[2];
 
-	unsigned __int64 KL[2];
-	unsigned __int64 KR[2];
-	unsigned __int64 KA[2];
-	unsigned __int64 KB[2];
-	unsigned __int64 D1;
-	unsigned __int64 D2;
+	uint64_t KL[2];
+	uint64_t KR[2];
+	uint64_t KA[2];
+	uint64_t KB[2];
+	uint64_t D1;
+	uint64_t D2;
 
 	// generate KL and KR
 	if (keyLen == 128)
@@ -384,15 +384,15 @@ void CAMELLIA_init(CamelliaContext* context, const unsigned __int64* key, unsign
 	}
 }
 
-void CAMELLIA_encrypt(const CamelliaContext* context, const unsigned __int64* block, unsigned __int64* out)
+void CAMELLIA_encrypt(const CamelliaContext* context, const uint64_t* block, uint64_t* out)
 {
 	// D[0] is D1 and D[1] is D2
-	unsigned __int64 D[2] = { block[0], block[1] };
-	unsigned __int16 subkey = 0;
-	unsigned __int16 dIndex;
-	unsigned __int16 oppositeIndex;
-	unsigned __int16 round;
-	unsigned __int16 feistelIteration;
+	uint64_t D[2] = { block[0], block[1] };
+	uint16_t subkey = 0;
+	uint16_t dIndex;
+	uint16_t oppositeIndex;
+	uint16_t round;
+	uint16_t feistelIteration;
 
 	D[0] ^= context->k[subkey++]; // Prewhitening
 	D[1] ^= context->k[subkey++];
@@ -429,15 +429,15 @@ void CAMELLIA_encrypt(const CamelliaContext* context, const unsigned __int64* bl
 	out[1] = D[0];
 }
 
-void CAMELLIA_decrypt(const CamelliaContext* context, const unsigned __int64* block, unsigned __int64* out)
+void CAMELLIA_decrypt(const CamelliaContext* context, const uint64_t* block, uint64_t* out)
 {
 	// D[0] is D1 and D[1] is D2
-	unsigned __int64 D[2] = { block[0], block[1] };
-	unsigned __int16 subkey = context->nrSubkeys - 1;
-	unsigned __int16 dIndex;
-	unsigned __int16 oppositeIndex;
-	unsigned __int16 round;
-	unsigned __int16 feistelIteration;
+	uint64_t D[2] = { block[0], block[1] };
+	uint16_t subkey = context->nrSubkeys - 1;
+	uint16_t dIndex;
+	uint16_t oppositeIndex;
+	uint16_t round;
+	uint16_t feistelIteration;
 
 	// Prewhitening
 	D[1] ^= context->k[subkey--];
@@ -480,11 +480,11 @@ void CAMELLIA_main(void)
 {
 	CamelliaContext context;
 	int i;
-	unsigned __int64 key[4];
-	unsigned __int64 text[2];
-	unsigned __int64 cipherText[2];
-	unsigned __int64 expectedCipherText[2];
-	unsigned __int64 decryptedText[2];
+	uint64_t key[4];
+	uint64_t text[2];
+	uint64_t cipherText[2];
+	uint64_t expectedCipherText[2];
+	uint64_t decryptedText[2];
 
 	// *** test for 128-bits key ***
 

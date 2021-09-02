@@ -1,15 +1,16 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 
 typedef struct
 {
-	unsigned __int8 nrSubkeys;
-	unsigned __int64 subkeys[72];
+	uint8_t nrSubkeys;
+	uint64_t subkeys[72];
 } SimonContext;
 
-void SIMON_init(SimonContext* context, unsigned __int64* key, unsigned __int16 keyLen);
-void SIMON_encrypt(SimonContext* context, unsigned __int64* block, unsigned __int64* out);
-void SIMON_decrypt(SimonContext* context, unsigned __int64* block, unsigned __int64* out);
+void SIMON_init(SimonContext* context, uint64_t* key, uint16_t keyLen);
+void SIMON_encrypt(SimonContext* context, uint64_t* block, uint64_t* out);
+void SIMON_decrypt(SimonContext* context, uint64_t* block, uint64_t* out);
 
 void SIMON_main(void);

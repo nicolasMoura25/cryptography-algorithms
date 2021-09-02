@@ -19,19 +19,19 @@
 #define NR_ROUNDS 31
 
 // s-box
-const unsigned __int8 sbox[16] =
+const uint8_t sbox[16] =
 {
 	0xc, 0x5, 0x6, 0xb, 0x9, 0x0, 0xa, 0xd, 0x3, 0xe, 0xf, 0x8, 0x4, 0x7, 0x1, 0x2
 };
 
 // inverse s-box
-const unsigned __int8 isbox[16] =
+const uint8_t isbox[16] =
 {
 	0x5, 0xe, 0xf, 0x8, 0xc, 0x1, 0x2, 0xd, 0xb, 0x4, 0x6, 0x3, 0x0, 0x7, 0x9, 0xa
 };
 
 // permutation table
-const unsigned __int8 p[64] =
+const uint8_t p[64] =
 {
 	0, 16, 32, 48, 1, 17, 33, 49, 2, 18, 34, 50, 3, 19, 35, 51,
 	4, 20, 36, 52, 5, 21, 37, 53, 6, 22, 38, 54, 7, 23, 39, 55,
@@ -39,26 +39,26 @@ const unsigned __int8 p[64] =
 	12, 28, 44, 60, 13, 29, 45, 61, 14, 30, 46, 62, 15, 31, 47, 63
 };
 
-void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int16 keyLen)
+void PRESENT_init(PresentContext* context, uint16_t* key, uint16_t keyLen)
 {
-	unsigned __int64 keyHigh;
-	unsigned __int64 keyLow;
+	uint64_t keyHigh;
+	uint64_t keyLow;
 
 	if (keyLen == 80) // generate subkeys for 80 bit key
 	{
 		keyHigh = key[0];
-		keyLow = (unsigned __int64)key[1] << 48
-			| (unsigned __int64)key[2] << 32
-			| (unsigned __int64)key[3] << 16
+		keyLow = (uint64_t)key[1] << 48
+			| (uint64_t)key[2] << 32
+			| (uint64_t)key[3] << 16
 			| key[4];
 
 		// first subkey is 64 leftmost bits of the key
 		context->roundKeys[0] = keyHigh << 48 | keyLow >> 16;
 
-		for (unsigned __int8 i = 1; i <= NR_ROUNDS; i++)
+		for (uint8_t i = 1; i <= NR_ROUNDS; i++)
 		{
 			//  key register is rotated by 61 bit positions to the left (cyclic left shift of 61)
-			unsigned __int64 temp = keyHigh;
+			uint64_t temp = keyHigh;
 			keyHigh = keyLow >> 3 & 0xffff;
 			keyLow = keyLow << 61 | temp << 45 | keyLow >> 19;
 
@@ -67,7 +67,7 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 			keyHigh = (keyHigh & 0x0fff) | (temp << 12);
 
 			// round_counter value i is exclusive - ored with bits k19 k18 k17 k16 k15
-			keyLow ^= (unsigned __int64)i << 15;
+			keyLow ^= (uint64_t)i << 15;
 
 			// save subkey with 64 leftmost bits of the key
 			context->roundKeys[i] = keyHigh << 48 | keyLow >> 16;
@@ -75,13 +75,13 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 	}
 	else // generate subkeys assuming key is 128 bits
 	{
-		keyHigh = (unsigned __int64)key[0] << 48
-			| (unsigned __int64)key[1] << 32
-			| (unsigned __int64)key[2] << 16
+		keyHigh = (uint64_t)key[0] << 48
+			| (uint64_t)key[1] << 32
+			| (uint64_t)key[2] << 16
 			| key[3];
-		keyLow = (unsigned __int64)key[4] << 48
-			| (unsigned __int64)key[5] << 32
-			| (unsigned __int64)key[6] << 16
+		keyLow = (uint64_t)key[4] << 48
+			| (uint64_t)key[5] << 32
+			| (uint64_t)key[6] << 16
 			| key[7];
 
 		// first subkey is 64 leftmost bits of the key
@@ -90,7 +90,7 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 		for (int i = 1; i <= NR_ROUNDS; i++)
 		{
 			//  key register is rotated by 61 bit positions to the left (cyclic left shift of 61)
-			unsigned __int64 temp = keyHigh;
+			uint64_t temp = keyHigh;
 			keyHigh = temp << 61 | keyLow >> 3;
 			keyLow = keyLow << 61 | temp >> 3;;
 
@@ -102,7 +102,7 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 
 			// round_counter value i is exclusive - ored with bits k66 k65 k64 k63 k62
 			keyHigh ^= i >> 2;
-			keyLow ^= (unsigned __int64)i << 62;
+			keyLow ^= (uint64_t)i << 62;
 
 			// save subkey with 64 leftmost bits of the key
 			context->roundKeys[i] = keyHigh;
@@ -121,17 +121,17 @@ void PRESENT_init(PresentContext* context, unsigned __int16* key, unsigned __int
 
 	addRoundKey(state, k31)
 */
-void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned __int16* out)
+void PRESENT_encrypt(PresentContext* context, uint16_t* block, uint16_t* out)
 {
-	unsigned __int8 i;
-	unsigned __int8 round;
-	unsigned __int64 state;
-	unsigned __int64 temp;
+	uint8_t i;
+	uint8_t round;
+	uint64_t state;
+	uint64_t temp;
 
 	// copy block to state
-	state = (unsigned __int64)block[0] << 48
-		| (unsigned __int64)block[1] << 32
-		| (unsigned __int64)block[2] << 16
+	state = (uint64_t)block[0] << 48
+		| (uint64_t)block[1] << 32
+		| (uint64_t)block[2] << 16
 		| block[3];
 
 	for (round = 0; round < NR_ROUNDS; round++)
@@ -147,11 +147,11 @@ void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		temp = 0;
 		for (i = 0; i < 8; i++)
 		{
-			unsigned __int8 pos = (unsigned __int8)(state >> (8 * (7 - i)));
-			unsigned __int8 highNybble = sbox[(pos >> 4) & 0x0f];
-			unsigned __int8 lowNybble = sbox[pos & 0x0f];
+			uint8_t pos = (uint8_t)(state >> (8 * (7 - i)));
+			uint8_t highNybble = sbox[(pos >> 4) & 0x0f];
+			uint8_t lowNybble = sbox[pos & 0x0f];
 
-			unsigned __int64 mask = 0;
+			uint64_t mask = 0;
 			mask |= highNybble << 4 | lowNybble;
 			mask = mask << (56 - (8 * i));
 			temp |= mask;
@@ -163,7 +163,7 @@ void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		temp = 0;
 		for (i = 0; i < 64; i++)
 		{
-			unsigned __int8 distance = 63 - i;
+			uint8_t distance = 63 - i;
 			temp |= ((state >> distance & 0x1) << (63 - p[i]));
 		}
 		state = temp;
@@ -173,10 +173,10 @@ void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned 
 	state ^= context->roundKeys[round];
 
 	// copy state to output;
-	out[0] = (unsigned __int16)(state >> 48);
-	out[1] = (unsigned __int16)(state >> 32);
-	out[2] = (unsigned __int16)(state >> 16);
-	out[3] = (unsigned __int16)state;
+	out[0] = (uint16_t)(state >> 48);
+	out[1] = (uint16_t)(state >> 32);
+	out[2] = (uint16_t)(state >> 16);
+	out[3] = (uint16_t)state;
 }
 
 /*
@@ -190,17 +190,17 @@ void PRESENT_encrypt(PresentContext* context, unsigned __int16* block, unsigned 
 
 	addRoundKey(state, k0)
 */
-void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned __int16* out)
+void PRESENT_decrypt(PresentContext* context, uint16_t* block, uint16_t* out)
 {
-	unsigned __int8 i;
-	unsigned __int8 round;
-	unsigned __int64 state;
-	unsigned __int64 temp;
+	uint8_t i;
+	uint8_t round;
+	uint64_t state;
+	uint64_t temp;
 
 	// copy block to state
-	state = (unsigned __int64)block[0] << 48
-		| (unsigned __int64)block[1] << 32
-		| (unsigned __int64)block[2] << 16
+	state = (uint64_t)block[0] << 48
+		| (uint64_t)block[1] << 32
+		| (uint64_t)block[2] << 16
 		| block[3];
 
 	// decrypt we run from last round key to the first one
@@ -215,7 +215,7 @@ void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		temp = 0;
 		for (i = 0; i < 64; i++)
 		{
-			unsigned __int8 distance = 63 - p[i];
+			uint8_t distance = 63 - p[i];
 			temp = (temp << 1) | ((state >> distance) & 0x1);
 		}
 		state = temp;
@@ -228,11 +228,11 @@ void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned 
 		temp = 0;
 		for (i = 0; i < 8; i++)
 		{
-			unsigned __int8 pos = (unsigned __int8)(state >> (8 * (7 - i)));
-			unsigned __int8 highNybble = isbox[(pos >> 4) & 0x0f];
-			unsigned __int8 lowNybble = isbox[pos & 0x0f];
+			uint8_t pos = (uint8_t)(state >> (8 * (7 - i)));
+			uint8_t highNybble = isbox[(pos >> 4) & 0x0f];
+			uint8_t lowNybble = isbox[pos & 0x0f];
 
-			unsigned __int64 mask = 0;
+			uint64_t mask = 0;
 			mask |= highNybble << 4 | lowNybble;
 			mask = mask << (56 - (8 * i));
 			temp |= mask;
@@ -244,21 +244,21 @@ void PRESENT_decrypt(PresentContext* context, unsigned __int16* block, unsigned 
 	state ^= context->roundKeys[round];
 
 	// copy state to output;
-	out[0] = (unsigned __int16)(state >> 48);
-	out[1] = (unsigned __int16)(state >> 32);
-	out[2] = (unsigned __int16)(state >> 16);
-	out[3] = (unsigned __int16)state;
+	out[0] = (uint16_t)(state >> 48);
+	out[1] = (uint16_t)(state >> 32);
+	out[2] = (uint16_t)(state >> 16);
+	out[3] = (uint16_t)state;
 }
 
 void PRESENT_main(void)
 {
 	PresentContext context;
 	int i;
-	unsigned __int16 key[8];
-	unsigned __int16 text[4];
-	unsigned __int16 cipherText[4];
-	unsigned __int16 expectedCipherText[4];
-	unsigned __int16 decryptedText[4];
+	uint16_t key[8];
+	uint16_t text[4];
+	uint16_t cipherText[4];
+	uint16_t expectedCipherText[4];
+	uint16_t decryptedText[4];
 
 	// test for 80-bits key
 

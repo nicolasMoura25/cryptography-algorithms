@@ -19,31 +19,31 @@
 #define NR_ROUNDS 8
 #define ENCRYPTION_KEY_LEN 6 * NR_ROUNDS + 4 // 52 subkeys
 
-static unsigned __int16 mul(unsigned __int16 a, unsigned __int16 b)
+static uint16_t mul(uint16_t a, uint16_t b)
 {
 	long p;
 	unsigned long q;
 
 	if (a == 0)
-		return (unsigned __int16)(1 - b);
+		return (uint16_t)(1 - b);
 	else if (b == 0)
-		return (unsigned __int16)(1 - a);
+		return (uint16_t)(1 - a);
 
 	q = (unsigned long)a * (unsigned long)b;
 	p = (q & 65535) - (q >> 16);
 
 	if (p <= 0)
 		p++;
-	return (unsigned __int16)p;
+	return (uint16_t)p;
 }
 
 /*
 * Euclidean multiplicative mod 65537 inverse algorithm
 */
-static unsigned __int16 inv(unsigned __int16 x)
+static uint16_t inv(uint16_t x)
 {
-	unsigned __int16 t0 = 1, t1;
-	unsigned __int16 q, y;
+	uint16_t t0 = 1, t1;
+	uint16_t q, y;
 
 	if (x <= 1)
 		return x;	// 0 and 1 are self-inverse 
@@ -70,7 +70,7 @@ static unsigned __int16 inv(unsigned __int16 x)
 	return 1 - t1;
 }
 
-static void generateEncryptionKeys(unsigned __int16* key, unsigned __int16 Z[52])
+static void generateEncryptionKeys(uint16_t* key, uint16_t Z[52])
 {
 	int i;
 
@@ -98,12 +98,12 @@ static void generateEncryptionKeys(unsigned __int16* key, unsigned __int16 Z[52]
 	}
 }
 
-static void generateDecryptionKeys(unsigned __int16* key, unsigned __int16 Z[52])
+static void generateDecryptionKeys(uint16_t* key, uint16_t Z[52])
 {
 	int i;
-	unsigned __int16 t1, t2, t3;
-	unsigned __int16 temp[ENCRYPTION_KEY_LEN];
-	unsigned __int16* p = temp + ENCRYPTION_KEY_LEN;
+	uint16_t t1, t2, t3;
+	uint16_t temp[ENCRYPTION_KEY_LEN];
+	uint16_t* p = temp + ENCRYPTION_KEY_LEN;
 
 	t1 = inv(*key++);
 	t2 = -*key++;
@@ -143,15 +143,15 @@ static void generateDecryptionKeys(unsigned __int16* key, unsigned __int16 Z[52]
 	memcpy(Z, temp, sizeof(temp));
 }
 
-static void idea(unsigned __int16* block, unsigned __int16* Z, unsigned __int16* out)
+static void idea(uint16_t* block, uint16_t* Z, uint16_t* out)
 {
-	unsigned __int16 i;
-	unsigned __int16 a;
-	unsigned __int16 b;
-	unsigned __int16 x0 = block[0];
-	unsigned __int16 x1 = block[1];
-	unsigned __int16 x2 = block[2];
-	unsigned __int16 x3 = block[3];
+	uint16_t i;
+	uint16_t a;
+	uint16_t b;
+	uint16_t x0 = block[0];
+	uint16_t x1 = block[1];
+	uint16_t x2 = block[2];
+	uint16_t x3 = block[3];
 
 	// round phase
 	for (i = 1; i <= NR_ROUNDS; i++)
@@ -182,18 +182,18 @@ static void idea(unsigned __int16* block, unsigned __int16* Z, unsigned __int16*
 	out[3] = mul(*Z++, x3);
 }
 
-void IDEA_init(IdeaContext* context, unsigned __int16* key)
+void IDEA_init(IdeaContext* context, uint16_t* key)
 {
 	generateEncryptionKeys(key, context->encryptionKeys);
 	generateDecryptionKeys(context->encryptionKeys, context->decryptionKeys);
 }
 
-void IDEA_encrypt(IdeaContext* context, unsigned __int16* block, unsigned __int16* out)
+void IDEA_encrypt(IdeaContext* context, uint16_t* block, uint16_t* out)
 {
 	idea(block, context->encryptionKeys, out);
 }
 
-void IDEA_decrypt(IdeaContext* context, unsigned __int16* encryptedBlock, unsigned __int16* out)
+void IDEA_decrypt(IdeaContext* context, uint16_t* encryptedBlock, uint16_t* out)
 {
 	idea(encryptedBlock, context->decryptionKeys, out);
 }
@@ -202,11 +202,11 @@ void IDEA_main(void)
 {
 	IdeaContext context;
 	int i;
-	unsigned __int16 key[8];
-	unsigned __int16 text[4];
-	unsigned __int16 cipherText[4];
-	unsigned __int16 expectedCipherText[4];
-	unsigned __int16 decryptedText[4];
+	uint16_t key[8];
+	uint16_t text[4];
+	uint16_t cipherText[4];
+	uint16_t expectedCipherText[4];
+	uint16_t decryptedText[4];
 
 	// key 12345678
 	for (i = 1; i <= 8; i++)

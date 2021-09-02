@@ -18,7 +18,7 @@
 
 #define NR_ROUNDS 16
 
-static const unsigned __int32 KC[16] =
+static const uint32_t KC[16] =
 {
    0x9E3779B9, 0x3C6EF373, 0x78DDE6E6, 0xF1BBCDCC,
    0xE3779B99, 0xC6EF3733, 0x8DDE6E67, 0x1BBCDCCF,
@@ -27,7 +27,7 @@ static const unsigned __int32 KC[16] =
 };
 
 //S-Box SS0
-static const unsigned __int32 ss0[256] =
+static const uint32_t ss0[256] =
 {
    0x2989A1A8, 0x05858184, 0x16C6D2D4, 0x13C3D3D0, 0x14445054, 0x1D0D111C, 0x2C8CA0AC, 0x25052124,
    0x1D4D515C, 0x03434340, 0x18081018, 0x1E0E121C, 0x11415150, 0x3CCCF0FC, 0x0ACAC2C8, 0x23436360,
@@ -64,7 +64,7 @@ static const unsigned __int32 ss0[256] =
 };
 
 //S-Box SS1
-static const unsigned __int32 ss1[256] =
+static const uint32_t ss1[256] =
 {
    0x38380830, 0xE828C8E0, 0x2C2D0D21, 0xA42686A2, 0xCC0FCFC3, 0xDC1ECED2, 0xB03383B3, 0xB83888B0,
    0xAC2F8FA3, 0x60204060, 0x54154551, 0xC407C7C3, 0x44044440, 0x6C2F4F63, 0x682B4B63, 0x581B4B53,
@@ -101,7 +101,7 @@ static const unsigned __int32 ss1[256] =
 };
 
 //S-Box SS2
-static const unsigned __int32 ss2[256] =
+static const uint32_t ss2[256] =
 {
    0xA1A82989, 0x81840585, 0xD2D416C6, 0xD3D013C3, 0x50541444, 0x111C1D0D, 0xA0AC2C8C, 0x21242505,
    0x515C1D4D, 0x43400343, 0x10181808, 0x121C1E0E, 0x51501141, 0xF0FC3CCC, 0xC2C80ACA, 0x63602343,
@@ -138,7 +138,7 @@ static const unsigned __int32 ss2[256] =
 };
 
 //S-Box SS3
-static const unsigned __int32 ss3[256] =
+static const uint32_t ss3[256] =
 {
    0x08303838, 0xC8E0E828, 0x0D212C2D, 0x86A2A426, 0xCFC3CC0F, 0xCED2DC1E, 0x83B3B033, 0x88B0B838,
    0x8FA3AC2F, 0x40606020, 0x45515415, 0xC7C3C407, 0x44404404, 0x4F636C2F, 0x4B63682B, 0x4B53581B,
@@ -180,15 +180,15 @@ static const unsigned __int32 ss3[256] =
 	divide input into 4 parts of 8 bits each and substitute in s-boxes
 	and xor them
 */
-static unsigned __int32 G(unsigned __int32 x)
+static uint32_t G(uint32_t x)
 {
 	return ss0[x & 0xFF] ^ ss1[(x >> 8) & 0xFF] ^ ss2[(x >> 16) & 0xFF] ^ ss3[(x >> 24) & 0xFF];
 }
 
 // Diffusion layer
-static void F(unsigned __int32 R0, unsigned __int32 R1,
-			  unsigned __int32 Ki0, unsigned __int32 Ki1,
-			  unsigned __int32* out0, unsigned __int32* out1)
+static void F(uint32_t R0, uint32_t R1,
+			  uint32_t Ki0, uint32_t Ki1,
+			  uint32_t* out0, uint32_t* out1)
 {
 	*out1 = (R0 ^ Ki0) ^ (R1 ^ Ki1);
 	*out1 = G(*out1);
@@ -199,10 +199,10 @@ static void F(unsigned __int32 R0, unsigned __int32 R1,
 	*out0 += *out1;
 }
 
-void SEED_init(SeedContext* context, unsigned __int32* key)
+void SEED_init(SeedContext* context, uint32_t* key)
 {
-	unsigned __int32 keys[4] = { key[0], key[1], key[2], key[3] };
-	unsigned __int32 temp;
+	uint32_t keys[4] = { key[0], key[1], key[2], key[3] };
+	uint32_t temp;
 	int i;
 
 	for (i = 0; i < 16; i++)
@@ -228,19 +228,19 @@ void SEED_init(SeedContext* context, unsigned __int32* key)
 	}
 }
 
-void SEED_encrypt(SeedContext* context, unsigned __int32* block, unsigned __int32* out)
+void SEED_encrypt(SeedContext* context, uint32_t* block, uint32_t* out)
 {
 	int i;
-	unsigned __int32 temp0;
-	unsigned __int32 temp1;
+	uint32_t temp0;
+	uint32_t temp1;
 	// subkey is ascending in encryption
-	unsigned __int32 subkey = 0;
+	uint32_t subkey = 0;
 	// left 64 bits of block divided into 2 32 bits parts
-	unsigned __int32 l0 = block[0];
-	unsigned __int32 l1 = block[1];
+	uint32_t l0 = block[0];
+	uint32_t l1 = block[1];
 	// right 64 bits of block divided into 2 32 bits parts
-	unsigned __int32 r0 = block[2];
-	unsigned __int32 r1 = block[3];
+	uint32_t r0 = block[2];
+	uint32_t r1 = block[3];
 
 	for (i = 0; i < NR_ROUNDS - 1; i++)
 	{
@@ -275,19 +275,19 @@ void SEED_encrypt(SeedContext* context, unsigned __int32* block, unsigned __int3
 	out[3] = r1;
 }
 
-void SEED_decrypt(SeedContext* context, unsigned __int32* block, unsigned __int32* out)
+void SEED_decrypt(SeedContext* context, uint32_t* block, uint32_t* out)
 {
 	int i;
-	unsigned __int32 temp0;
-	unsigned __int32 temp1;
+	uint32_t temp0;
+	uint32_t temp1;
 	// subkey is descending in decryption
-	unsigned __int32 subkey = 31;
+	uint32_t subkey = 31;
 	// left 64 bits of block divided into 2 32 bits parts
-	unsigned __int32 l0 = block[0];
-	unsigned __int32 l1 = block[1];
+	uint32_t l0 = block[0];
+	uint32_t l1 = block[1];
 	// right 64 bits of block divided into 2 32 bits parts
-	unsigned __int32 r0 = block[2];
-	unsigned __int32 r1 = block[3];
+	uint32_t r0 = block[2];
+	uint32_t r1 = block[3];
 
 	for (i = 0; i < NR_ROUNDS - 1; i++)
 	{
@@ -326,11 +326,11 @@ void SEED_main(void)
 {
 	SeedContext context;
 	int i;
-	unsigned __int32 key[4];
-	unsigned __int32 text[4];
-	unsigned __int32 cipherText[4];
-	unsigned __int32 expectedCipherText[4];
-	unsigned __int32 decryptedText[4];
+	uint32_t key[4];
+	uint32_t text[4];
+	uint32_t cipherText[4];
+	uint32_t expectedCipherText[4];
+	uint32_t decryptedText[4];
 
 	// key 00000000 00000000 00000000 00000000
 	key[0] = 0x00000000;

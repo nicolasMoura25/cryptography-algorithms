@@ -1,8 +1,9 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 
-void NOEKEON_encrypt(unsigned __int32* block, unsigned __int32* key, unsigned __int32* encryptdBlock);
-void NOEKEON_decrypt(unsigned __int32* encryptedBlock, unsigned __int32* key, unsigned __int32* decryptedBlock);
+void NOEKEON_encrypt(uint32_t* block, uint32_t* key, uint32_t* encryptdBlock);
+void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decryptedBlock);
 
 void NOEKEON_main(void);

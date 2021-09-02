@@ -16,14 +16,14 @@
 *		(https://mrajacse.files.wordpress.com/2012/01/applied-cryptography-2nd-ed-b-schneier.pdf pag. 277)
 */
 
-unsigned __int32 CM1;
-unsigned __int32 CM2;
-unsigned __int32 N1;
-unsigned __int32 N2;
-unsigned __int32 R;
+uint32_t CM1;
+uint32_t CM2;
+uint32_t N1;
+uint32_t N2;
+uint32_t R;
 
 // S-box used by the Central Bank of Russian Federation
-const unsigned __int8 s_box[8][16] = {
+const uint8_t s_box[8][16] = {
 									{ 4, 10, 9, 2, 13, 8, 0, 14, 6, 11, 1, 12, 7, 15, 5, 3 },
 									{ 14, 11, 4, 12, 6, 13, 15, 10, 2, 3, 8, 1, 0, 7, 5, 9 },
 									{ 5, 8, 1, 13, 10, 3, 4, 2, 14, 15, 12, 7, 6, 0, 9, 11 },
@@ -34,12 +34,12 @@ const unsigned __int8 s_box[8][16] = {
 									{ 1, 15, 13, 0, 5, 7, 10, 4, 9, 2, 3, 14, 6, 11, 8, 12 }
 };
 
-void round(unsigned __int32 xi)
+void round(uint32_t xi)
 {
 	CM1 = (N1 + xi) % 4294967296; // 2^32
 
 	// read entire s-box column according to the CM1 bits
-	unsigned __int32 SN = 0;
+	uint32_t SN = 0;
 	for (int j = 0; j <= 7; j++)
 	{
 		/*
@@ -51,11 +51,11 @@ void round(unsigned __int32 xi)
 		* read from the s-box at each line and based on the
 		* size of the total 16 columns of s-box (and thus % 16)
 		*/
-		unsigned __int8 Ni = (CM1 >> (4 * (7 - j))) % 16;
+		uint8_t Ni = (CM1 >> (4 * (7 - j))) % 16;
 		Ni = s_box[j][Ni]; // substitution through s-blocks.
 
 		// place the read bits to correct position in the 32 bit output
-		unsigned __int32 mask = 0;
+		uint32_t mask = 0;
 		mask = mask | Ni;
 		mask = mask << (28 - (4 * j));
 		SN = SN | mask;
@@ -64,7 +64,7 @@ void round(unsigned __int32 xi)
 	R = SN;
 
 	// cyclic 11 shift
-	unsigned __int32 mask = R << 11;
+	uint32_t mask = R << 11;
 	R = (R >> 21) | mask;
 
 	// modulo 2 addition
@@ -73,9 +73,9 @@ void round(unsigned __int32 xi)
 	N1 = CM2;
 }
 
-unsigned __int64 GOST_encrypt(unsigned __int64 block, unsigned __int32* key)
+uint64_t GOST_encrypt(uint64_t block, uint32_t* key)
 {
-	N1 = (unsigned __int32)block;
+	N1 = (uint32_t)block;
 	N2 = block >> 32;
 
 	// first 24 rounds
@@ -93,14 +93,14 @@ unsigned __int64 GOST_encrypt(unsigned __int64 block, unsigned __int32* key)
 		round(key[i]);
 	}
 
-	unsigned __int64 tc = N1;
+	uint64_t tc = N1;
 	tc = (tc << 32) | N2;
 	return tc;
 }
 
-unsigned __int64 GOST_decrypt(unsigned __int64 encryptedBlock, unsigned __int32* key)
+uint64_t GOST_decrypt(uint64_t encryptedBlock, uint32_t* key)
 {
-	N1 = (unsigned __int32)encryptedBlock;
+	N1 = (uint32_t)encryptedBlock;
 	N2 = encryptedBlock >> 32;
 
 	// last 8 rounds
@@ -118,25 +118,25 @@ unsigned __int64 GOST_decrypt(unsigned __int64 encryptedBlock, unsigned __int32*
 		}
 	}
 
-	unsigned __int64 tc = N1;
+	uint64_t tc = N1;
 	tc = (tc << 32) | N2;
 	return tc;
 }
 
 void GOST_main(void)
 {
-	unsigned __int32 key[8];
+	uint32_t key[8];
 	int i;
 	for (i = 0; i < 8; i++)
 	{
 		key[i] = i;
 	}
 
-	unsigned __int64 text = 118105110105;
-	unsigned __int64 expectedCipherText = 3078704057068866123;
+	uint64_t text = 118105110105;
+	uint64_t expectedCipherText = 3078704057068866123;
 
-	unsigned __int64 cipherText = GOST_encrypt(text, key);
-	unsigned __int64 decrypted = GOST_decrypt(cipherText, key);
+	uint64_t cipherText = GOST_encrypt(text, key);
+	uint64_t decrypted = GOST_decrypt(cipherText, key);
 
 	printf("\nGOST \n\n");
 

@@ -16,12 +16,12 @@
 */
 
 // constants
-const unsigned __int32 C1[4] = { 0x517cc1b7, 0x27220a94, 0xfe13abe8, 0xfa9a6ee0 };
-const unsigned __int32 C2[4] = { 0x6db14acc, 0x9e21c820, 0xff28b1d5, 0xef5de2b0 };
-const unsigned __int32 C3[4] = { 0xdb92371d, 0x2126e970, 0x03249775, 0x04e8c90e };
+const uint32_t C1[4] = { 0x517cc1b7, 0x27220a94, 0xfe13abe8, 0xfa9a6ee0 };
+const uint32_t C2[4] = { 0x6db14acc, 0x9e21c820, 0xff28b1d5, 0xef5de2b0 };
+const uint32_t C3[4] = { 0xdb92371d, 0x2126e970, 0x03249775, 0x04e8c90e };
 
 // S-Boxes
-const unsigned __int8 SB1[256] = {
+const uint8_t SB1[256] = {
 								0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
 								0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
 								0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
@@ -40,7 +40,7 @@ const unsigned __int8 SB1[256] = {
 								0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
 };
 
-const unsigned __int8 SB2[256] = {
+const uint8_t SB2[256] = {
 								0xe2, 0x4e, 0x54, 0xfc, 0x94, 0xc2, 0x4a, 0xcc, 0x62, 0x0d, 0x6a, 0x46, 0x3c, 0x4d, 0x8b, 0xd1,
 								0x5e, 0xfa, 0x64, 0xcb, 0xb4, 0x97, 0xbe, 0x2b, 0xbc, 0x77, 0x2e, 0x03, 0xd3, 0x19, 0x59, 0xc1,
 								0x1d, 0x06, 0x41, 0x6b, 0x55, 0xf0, 0x99, 0x69, 0xea, 0x9c, 0x18, 0xae, 0x63, 0xdf, 0xe7, 0xbb,
@@ -59,7 +59,7 @@ const unsigned __int8 SB2[256] = {
 								0xed, 0x14, 0xe0, 0xa5, 0x3d, 0x22, 0xb3, 0xf8, 0x89, 0xde, 0x71, 0x1a, 0xaf, 0xba, 0xb5, 0x81
 };
 
-const unsigned __int8 SB3[256] = {
+const uint8_t SB3[256] = {
 								0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb,
 								0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb,
 								0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e,
@@ -78,7 +78,7 @@ const unsigned __int8 SB3[256] = {
 								0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
 };
 
-const unsigned __int8 SB4[256] = {
+const uint8_t SB4[256] = {
 								0x30, 0x68, 0x99, 0x1b, 0x87, 0xb9, 0x21, 0x78, 0x50, 0x39, 0xdb, 0xe1, 0x72, 0x09, 0x62, 0x3c,
 								0x3e, 0x7e, 0x5e, 0x8e, 0xf1, 0xa0, 0xcc, 0xa3, 0x2a, 0x1d, 0xfb, 0xb6, 0xd6, 0x20, 0xc4, 0x8d,
 								0x81, 0x65, 0xf5, 0x89, 0xcb, 0x9d, 0x77, 0xc6, 0x57, 0x43, 0x56, 0x17, 0xd4, 0x40, 0x1a, 0x4d,
@@ -97,7 +97,7 @@ const unsigned __int8 SB4[256] = {
 								0x25, 0x8a, 0xb5, 0xe7, 0x42, 0xb3, 0xc7, 0xea, 0xf7, 0x4c, 0x11, 0x33, 0x03, 0xa2, 0xac, 0x60
 };
 
-static void XOR_128(unsigned __int32* y, unsigned __int32* x)
+static void XOR_128(uint32_t* y, uint32_t* x)
 {
 	y[0] ^= x[0];
 	y[1] ^= x[1];
@@ -105,7 +105,7 @@ static void XOR_128(unsigned __int32* y, unsigned __int32* x)
 	y[3] ^= x[3];
 }
 
-static void MOV_128(unsigned __int32* y, const unsigned __int32* x)
+static void MOV_128(uint32_t* y, const uint32_t* x)
 {
 	y[0] = x[0];
 	y[1] = x[1];
@@ -114,7 +114,7 @@ static void MOV_128(unsigned __int32* y, const unsigned __int32* x)
 }
 
 // Rotate Left circular shift 128 bits
-static void ROL_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
+static void ROL_128(uint32_t* y, uint32_t* x, uint32_t n)
 {
 	y[0] = (x[0] << n) | (x[1] >> (32 - n));
 	y[1] = (x[1] << n) | (x[2] >> (32 - n));
@@ -123,7 +123,7 @@ static void ROL_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n
 }
 
 // Rotate Right circular shift 128 bits
-static void ROR_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n)
+static void ROR_128(uint32_t* y, uint32_t* x, uint32_t n)
 {
 	y[3] = (x[3] >> n) | (x[2] << (32 - n));
 	y[2] = (x[2] >> n) | (x[1] << (32 - n));
@@ -131,7 +131,7 @@ static void ROR_128(unsigned __int32* y, unsigned __int32* x, unsigned __int32 n
 	y[0] = (x[0] >> n) | (x[3] << (32 - n));
 }
 
-static void SL1(unsigned __int32* input, unsigned __int32* output)
+static void SL1(uint32_t* input, uint32_t* output)
 {
 	/*
 		y0 = SB1(x0),  y1 = SB2(x1),  y2 = SB3(x2),  y3 = SB4(x3),
@@ -140,28 +140,28 @@ static void SL1(unsigned __int32* input, unsigned __int32* output)
 		y12= SB1(x12), y13= SB2(x13), y14= SB3(x14), y15= SB4(x15).
 	*/
 
-	output[0] = SB1[(unsigned __int8)(input[0] >> 24)] << 24
-		| SB2[(unsigned __int8)(input[0] >> 16)] << 16
-		| SB3[(unsigned __int8)(input[0] >> 8)] << 8
-		| SB4[(unsigned __int8)(input[0] >> 0)];
+	output[0] = SB1[(uint8_t)(input[0] >> 24)] << 24
+		| SB2[(uint8_t)(input[0] >> 16)] << 16
+		| SB3[(uint8_t)(input[0] >> 8)] << 8
+		| SB4[(uint8_t)(input[0] >> 0)];
 
-	output[1] = SB1[(unsigned __int8)(input[1] >> 24)] << 24
-		| SB2[(unsigned __int8)(input[1] >> 16)] << 16
-		| SB3[(unsigned __int8)(input[1] >> 8)] << 8
-		| SB4[(unsigned __int8)(input[1] >> 0)];
+	output[1] = SB1[(uint8_t)(input[1] >> 24)] << 24
+		| SB2[(uint8_t)(input[1] >> 16)] << 16
+		| SB3[(uint8_t)(input[1] >> 8)] << 8
+		| SB4[(uint8_t)(input[1] >> 0)];
 
-	output[2] = SB1[(unsigned __int8)(input[2] >> 24)] << 24
-		| SB2[(unsigned __int8)(input[2] >> 16)] << 16
-		| SB3[(unsigned __int8)(input[2] >> 8)] << 8
-		| SB4[(unsigned __int8)(input[2] >> 0)];
+	output[2] = SB1[(uint8_t)(input[2] >> 24)] << 24
+		| SB2[(uint8_t)(input[2] >> 16)] << 16
+		| SB3[(uint8_t)(input[2] >> 8)] << 8
+		| SB4[(uint8_t)(input[2] >> 0)];
 
-	output[3] = SB1[(unsigned __int8)(input[3] >> 24)] << 24
-		| SB2[(unsigned __int8)(input[3] >> 16)] << 16
-		| SB3[(unsigned __int8)(input[3] >> 8)] << 8
-		| SB4[(unsigned __int8)(input[3] >> 0)];
+	output[3] = SB1[(uint8_t)(input[3] >> 24)] << 24
+		| SB2[(uint8_t)(input[3] >> 16)] << 16
+		| SB3[(uint8_t)(input[3] >> 8)] << 8
+		| SB4[(uint8_t)(input[3] >> 0)];
 }
 
-static void SL2(unsigned __int32* input, unsigned __int32* output)
+static void SL2(uint32_t* input, uint32_t* output)
 {
 	/*
 		y0 = SB3(x0),  y1 = SB4(x1),  y2 = SB1(x2),  y3 = SB2(x3),
@@ -170,28 +170,28 @@ static void SL2(unsigned __int32* input, unsigned __int32* output)
 		y12= SB3(x12), y13= SB4(x13), y14= SB1(x14), y15= SB2(x15).
 	*/
 
-	output[0] = SB3[(unsigned __int8)(input[0] >> 24)] << 24
-		| SB4[(unsigned __int8)(input[0] >> 16)] << 16
-		| SB1[(unsigned __int8)(input[0] >> 8)] << 8
-		| SB2[(unsigned __int8)(input[0] >> 0)];
+	output[0] = SB3[(uint8_t)(input[0] >> 24)] << 24
+		| SB4[(uint8_t)(input[0] >> 16)] << 16
+		| SB1[(uint8_t)(input[0] >> 8)] << 8
+		| SB2[(uint8_t)(input[0] >> 0)];
 
-	output[1] = SB3[(unsigned __int8)(input[1] >> 24)] << 24
-		| SB4[(unsigned __int8)(input[1] >> 16)] << 16
-		| SB1[(unsigned __int8)(input[1] >> 8)] << 8
-		| SB2[(unsigned __int8)(input[1] >> 0)];
+	output[1] = SB3[(uint8_t)(input[1] >> 24)] << 24
+		| SB4[(uint8_t)(input[1] >> 16)] << 16
+		| SB1[(uint8_t)(input[1] >> 8)] << 8
+		| SB2[(uint8_t)(input[1] >> 0)];
 
-	output[2] = SB3[(unsigned __int8)(input[2] >> 24)] << 24
-		| SB4[(unsigned __int8)(input[2] >> 16)] << 16
-		| SB1[(unsigned __int8)(input[2] >> 8)] << 8
-		| SB2[(unsigned __int8)(input[2] >> 0)];
+	output[2] = SB3[(uint8_t)(input[2] >> 24)] << 24
+		| SB4[(uint8_t)(input[2] >> 16)] << 16
+		| SB1[(uint8_t)(input[2] >> 8)] << 8
+		| SB2[(uint8_t)(input[2] >> 0)];
 
-	output[3] = SB3[(unsigned __int8)(input[3] >> 24)] << 24
-		| SB4[(unsigned __int8)(input[3] >> 16)] << 16
-		| SB1[(unsigned __int8)(input[3] >> 8)] << 8
-		| SB2[(unsigned __int8)(input[3] >> 0)];
+	output[3] = SB3[(uint8_t)(input[3] >> 24)] << 24
+		| SB4[(uint8_t)(input[3] >> 16)] << 16
+		| SB1[(uint8_t)(input[3] >> 8)] << 8
+		| SB2[(uint8_t)(input[3] >> 0)];
 }
 
-static void A(unsigned __int32* input, unsigned __int32* output)
+static void A(uint32_t* input, uint32_t* output)
 {
 	/*
 		y0  = x3 ^ x4 ^ x6 ^ x8  ^ x9  ^ x13 ^ x14,
@@ -212,39 +212,39 @@ static void A(unsigned __int32* input, unsigned __int32* output)
 		y15 = x1 ^ x2 ^ x4 ^ x5  ^ x8  ^ x10 ^ x15.
 	*/
 
-	unsigned __int8 x0 = input[0] >> 24;
-	unsigned __int8 x1 = input[0] >> 16;
-	unsigned __int8 x2 = input[0] >> 8;
-	unsigned __int8 x3 = input[0];
-	unsigned __int8 x4 = input[1] >> 24;
-	unsigned __int8 x5 = input[1] >> 16;
-	unsigned __int8 x6 = input[1] >> 8;
-	unsigned __int8 x7 = input[1];
-	unsigned __int8 x8 = input[2] >> 24;
-	unsigned __int8 x9 = input[2] >> 16;
-	unsigned __int8 x10 = input[2] >> 8;
-	unsigned __int8 x11 = input[2];
-	unsigned __int8 x12 = input[3] >> 24;
-	unsigned __int8 x13 = input[3] >> 16;
-	unsigned __int8 x14 = input[3] >> 8;
-	unsigned __int8 x15 = input[3];
+	uint8_t x0 = input[0] >> 24;
+	uint8_t x1 = input[0] >> 16;
+	uint8_t x2 = input[0] >> 8;
+	uint8_t x3 = input[0];
+	uint8_t x4 = input[1] >> 24;
+	uint8_t x5 = input[1] >> 16;
+	uint8_t x6 = input[1] >> 8;
+	uint8_t x7 = input[1];
+	uint8_t x8 = input[2] >> 24;
+	uint8_t x9 = input[2] >> 16;
+	uint8_t x10 = input[2] >> 8;
+	uint8_t x11 = input[2];
+	uint8_t x12 = input[3] >> 24;
+	uint8_t x13 = input[3] >> 16;
+	uint8_t x14 = input[3] >> 8;
+	uint8_t x15 = input[3];
 
-	unsigned __int8 y0 = x3 ^ x4 ^ x6 ^ x8 ^ x9 ^ x13 ^ x14;
-	unsigned __int8 y1 = x2 ^ x5 ^ x7 ^ x8 ^ x9 ^ x12 ^ x15;
-	unsigned __int8 y2 = x1 ^ x4 ^ x6 ^ x10 ^ x11 ^ x12 ^ x15;
-	unsigned __int8 y3 = x0 ^ x5 ^ x7 ^ x10 ^ x11 ^ x13 ^ x14;
-	unsigned __int8 y4 = x0 ^ x2 ^ x5 ^ x8 ^ x11 ^ x14 ^ x15;
-	unsigned __int8 y5 = x1 ^ x3 ^ x4 ^ x9 ^ x10 ^ x14 ^ x15;
-	unsigned __int8 y6 = x0 ^ x2 ^ x7 ^ x9 ^ x10 ^ x12 ^ x13;
-	unsigned __int8 y7 = x1 ^ x3 ^ x6 ^ x8 ^ x11 ^ x12 ^ x13;
-	unsigned __int8 y8 = x0 ^ x1 ^ x4 ^ x7 ^ x10 ^ x13 ^ x15;
-	unsigned __int8 y9 = x0 ^ x1 ^ x5 ^ x6 ^ x11 ^ x12 ^ x14;
-	unsigned __int8 y10 = x2 ^ x3 ^ x5 ^ x6 ^ x8 ^ x13 ^ x15;
-	unsigned __int8 y11 = x2 ^ x3 ^ x4 ^ x7 ^ x9 ^ x12 ^ x14;
-	unsigned __int8 y12 = x1 ^ x2 ^ x6 ^ x7 ^ x9 ^ x11 ^ x12;
-	unsigned __int8 y13 = x0 ^ x3 ^ x6 ^ x7 ^ x8 ^ x10 ^ x13;
-	unsigned __int8 y14 = x0 ^ x3 ^ x4 ^ x5 ^ x9 ^ x11 ^ x14;
-	unsigned __int8 y15 = x1 ^ x2 ^ x4 ^ x5 ^ x8 ^ x10 ^ x15;
+	uint8_t y0 = x3 ^ x4 ^ x6 ^ x8 ^ x9 ^ x13 ^ x14;
+	uint8_t y1 = x2 ^ x5 ^ x7 ^ x8 ^ x9 ^ x12 ^ x15;
+	uint8_t y2 = x1 ^ x4 ^ x6 ^ x10 ^ x11 ^ x12 ^ x15;
+	uint8_t y3 = x0 ^ x5 ^ x7 ^ x10 ^ x11 ^ x13 ^ x14;
+	uint8_t y4 = x0 ^ x2 ^ x5 ^ x8 ^ x11 ^ x14 ^ x15;
+	uint8_t y5 = x1 ^ x3 ^ x4 ^ x9 ^ x10 ^ x14 ^ x15;
+	uint8_t y6 = x0 ^ x2 ^ x7 ^ x9 ^ x10 ^ x12 ^ x13;
+	uint8_t y7 = x1 ^ x3 ^ x6 ^ x8 ^ x11 ^ x12 ^ x13;
+	uint8_t y8 = x0 ^ x1 ^ x4 ^ x7 ^ x10 ^ x13 ^ x15;
+	uint8_t y9 = x0 ^ x1 ^ x5 ^ x6 ^ x11 ^ x12 ^ x14;
+	uint8_t y10 = x2 ^ x3 ^ x5 ^ x6 ^ x8 ^ x13 ^ x15;
+	uint8_t y11 = x2 ^ x3 ^ x4 ^ x7 ^ x9 ^ x12 ^ x14;
+	uint8_t y12 = x1 ^ x2 ^ x6 ^ x7 ^ x9 ^ x11 ^ x12;
+	uint8_t y13 = x0 ^ x3 ^ x6 ^ x7 ^ x8 ^ x10 ^ x13;
+	uint8_t y14 = x0 ^ x3 ^ x4 ^ x5 ^ x9 ^ x11 ^ x14;
+	uint8_t y15 = x1 ^ x2 ^ x4 ^ x5 ^ x8 ^ x10 ^ x15;
 
 	output[0] = y0 << 24 | y1 << 16 | y2 << 8 | y3;
 	output[1] = y4 << 24 | y5 << 16 | y6 << 8 | y7;
@@ -252,10 +252,10 @@ static void A(unsigned __int32* input, unsigned __int32* output)
 	output[3] = y12 << 24 | y13 << 16 | y14 << 8 | y15;
 }
 
-static void FO(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
+static void FO(uint32_t* D, uint32_t* RK, uint32_t* output)
 {
 	// A(SL1(D ^ RK))
-	unsigned __int32 y[4];
+	uint32_t y[4];
 	MOV_128(y, D);
 
 	// D xor RK
@@ -268,10 +268,10 @@ static void FO(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* outp
 	A(y, output);
 }
 
-static void FE(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output)
+static void FE(uint32_t* D, uint32_t* RK, uint32_t* output)
 {
 	// A(SL2(D ^ RK))
-	unsigned __int32 y[4];
+	uint32_t y[4];
 	MOV_128(y, D);
 
 	// D xor RK
@@ -284,11 +284,11 @@ static void FE(unsigned __int32* D, unsigned __int32* RK, unsigned __int32* outp
 	A(y, output);
 }
 
-static void generateEncryptionKeys(unsigned __int32* W0,
-								   unsigned __int32* W1,
-								   unsigned __int32* W2,
-								   unsigned __int32* W3,
-								   unsigned __int32 eks[][4])
+static void generateEncryptionKeys(uint32_t* W0,
+								   uint32_t* W1,
+								   uint32_t* W2,
+								   uint32_t* W3,
+								   uint32_t eks[][4])
 {
 	/*
 		ek1  = W0 ^(W1 >>> 19),
@@ -309,7 +309,7 @@ static void generateEncryptionKeys(unsigned __int32* W0,
 		ek16 = (W0 <<< 31) ^ W3,
 		ek17 = W0 ^ (W1 <<< 19).
 	*/
-	unsigned __int32 temp[4];
+	uint32_t temp[4];
 
 	ROR_128(eks[0], W1, 19);
 	XOR_128(eks[0], W0);
@@ -356,11 +356,11 @@ static void generateEncryptionKeys(unsigned __int32* W0,
 	XOR_128(eks[16], W0);
 }
 
-static void generateDecryptionKeys(unsigned __int32 eks[][4], unsigned __int32 dks[][4], unsigned __int32 rounds)
+static void generateDecryptionKeys(uint32_t eks[][4], uint32_t dks[][4], uint32_t rounds)
 {
-	unsigned __int32 i;
-	unsigned __int32 ekPos = rounds - 1;
-	unsigned __int32 dkPos = 0;
+	uint32_t i;
+	uint32_t ekPos = rounds - 1;
+	uint32_t dkPos = 0;
 
 	/*
 		n = 12
@@ -382,18 +382,18 @@ static void generateDecryptionKeys(unsigned __int32 eks[][4], unsigned __int32 d
 	MOV_128(dks[dkPos], eks[ekPos]);
 }
 
-void ARIA_init(AriaContext* context, const unsigned __int32* key, unsigned __int32 keyLength)
+void ARIA_init(AriaContext* context, const uint32_t* key, uint32_t keyLength)
 {
-	unsigned __int32 W0[4];
-	unsigned __int32 W1[4];
-	unsigned __int32 W2[4];
-	unsigned __int32 W3[4];
+	uint32_t W0[4];
+	uint32_t W1[4];
+	uint32_t W2[4];
+	uint32_t W3[4];
 
-	unsigned __int32 CK1[4];
-	unsigned __int32 CK2[4];
-	unsigned __int32 CK3[4];
+	uint32_t CK1[4];
+	uint32_t CK2[4];
+	uint32_t CK3[4];
 
-	unsigned __int32 KR[4];
+	uint32_t KR[4];
 
 	if (keyLength == 128)
 	{
@@ -452,11 +452,11 @@ void ARIA_init(AriaContext* context, const unsigned __int32* key, unsigned __int
 	generateDecryptionKeys(context->eks, context->dks, context->rounds);
 }
 
-void ARIA_encrypt(AriaContext* context, unsigned __int32* block, unsigned __int32* P)
+void ARIA_encrypt(AriaContext* context, uint32_t* block, uint32_t* P)
 {
-	unsigned __int32 round = 0;
-	unsigned __int32 subkey = 0;
-	void (*roundFunctions[2]) (unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output) = { FE, FO };
+	uint32_t round = 0;
+	uint32_t subkey = 0;
+	void (*roundFunctions[2]) (uint32_t* D, uint32_t* RK, uint32_t* output) = { FE, FO };
 
 	MOV_128(P, block);
 
@@ -485,11 +485,11 @@ void ARIA_encrypt(AriaContext* context, unsigned __int32* block, unsigned __int3
 	XOR_128(P, context->eks[subkey++]);
 }
 
-void ARIA_decrypt(AriaContext* context, unsigned __int32* block, unsigned __int32* P)
+void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P)
 {
-	unsigned __int32 round = 0;
-	unsigned __int32 subkey = 0;
-	void (*roundFunctions[2]) (unsigned __int32* D, unsigned __int32* RK, unsigned __int32* output) = { FE, FO };
+	uint32_t round = 0;
+	uint32_t subkey = 0;
+	void (*roundFunctions[2]) (uint32_t* D, uint32_t* RK, uint32_t* output) = { FE, FO };
 
 	MOV_128(P, block);
 
@@ -521,11 +521,11 @@ void ARIA_main(void)
 {
 	AriaContext context;
 	int i;
-	unsigned __int32 key[8];
-	unsigned __int32 text[4];
-	unsigned __int32 cipherText[4];
-	unsigned __int32 expectedCipherText[4];
-	unsigned __int32 decryptedText[4];
+	uint32_t key[8];
+	uint32_t text[4];
+	uint32_t cipherText[4];
+	uint32_t expectedCipherText[4];
+	uint32_t decryptedText[4];
 
 	// *** test for 128-bits key ***
 

@@ -15,18 +15,18 @@
 */
 
 // Rotate Left circular shift 32 bits
-static unsigned __int64 ROL_64(unsigned __int64 x, unsigned __int32 n)
+static uint64_t ROL_64(uint64_t x, uint32_t n)
 {
 	return x << n | x >> (64 - n);
 }
 
 // Rotate Right circular shift 32 bits
-static unsigned __int64 ROR_64(unsigned __int64 x, unsigned __int32 n)
+static uint64_t ROR_64(uint64_t x, uint32_t n)
 {
 	return x >> n | x << (64 - n);
 }
 
-static void R(unsigned __int64* x, unsigned __int64* y, unsigned __int64 k)
+static void R(uint64_t* x, uint64_t* y, uint64_t k)
 {
 	*x = ROR_64(*x, 8);
 	*x += *y;
@@ -35,7 +35,7 @@ static void R(unsigned __int64* x, unsigned __int64* y, unsigned __int64 k)
 	*y ^= *x;
 }
 
-static void RI(unsigned __int64* x, unsigned __int64* y, unsigned __int64 k)
+static void RI(uint64_t* x, uint64_t* y, uint64_t k)
 {
 	*y ^= *x;
 	*y = ROR_64(*y, 3);
@@ -44,13 +44,13 @@ static void RI(unsigned __int64* x, unsigned __int64* y, unsigned __int64 k)
 	*x = ROL_64(*x, 8);
 }
 
-void SPECK_init(SpeckContext* context, unsigned __int64* key, unsigned __int16 keyLen)
+void SPECK_init(SpeckContext* context, uint64_t* key, uint16_t keyLen)
 {
-	unsigned __int64 A;
-	unsigned __int64 B;
-	unsigned __int64 C;
-	unsigned __int64 D;
-	unsigned __int64 i;
+	uint64_t A;
+	uint64_t B;
+	uint64_t C;
+	uint64_t D;
+	uint64_t i;
 
 	if (keyLen == 128)
 	{
@@ -104,11 +104,11 @@ void SPECK_init(SpeckContext* context, unsigned __int64* key, unsigned __int16 k
 	}
 }
 
-void SPECK_encrypt(SpeckContext* context, unsigned __int64* block, unsigned __int64* out)
+void SPECK_encrypt(SpeckContext* context, uint64_t* block, uint64_t* out)
 {
-	unsigned __int8 i;
-	unsigned __int64 x = block[0];
-	unsigned __int64 y = block[1];
+	uint8_t i;
+	uint64_t x = block[0];
+	uint64_t y = block[1];
 
 	for (i = 0; i < context->nrSubkeys; i++)
 	{
@@ -119,11 +119,11 @@ void SPECK_encrypt(SpeckContext* context, unsigned __int64* block, unsigned __in
 	out[1] = y;
 }
 
-void SPECK_decrypt(SpeckContext* context, unsigned __int64* block, unsigned __int64* out)
+void SPECK_decrypt(SpeckContext* context, uint64_t* block, uint64_t* out)
 {
 	int i;
-	unsigned __int64 x = block[0];
-	unsigned __int64 y = block[1];
+	uint64_t x = block[0];
+	uint64_t y = block[1];
 
 	for (i = context->nrSubkeys - 1; i >= 0; i--)
 	{
@@ -138,11 +138,11 @@ void SPECK_main(void)
 {
 	SpeckContext context;
 	int i;
-	unsigned __int64 key[4];
-	unsigned __int64 text[2];
-	unsigned __int64 cipherText[2];
-	unsigned __int64 expectedCipherText[2];
-	unsigned __int64 decryptedText[2];
+	uint64_t key[4];
+	uint64_t text[2];
+	uint64_t cipherText[2];
+	uint64_t expectedCipherText[2];
+	uint64_t decryptedText[2];
 
 	// test for 128-bits key
 

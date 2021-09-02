@@ -1,15 +1,16 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 
 typedef struct
 {
-	unsigned __int8 nrSubkeys;
-	unsigned __int64 subkeys[34];
+	uint8_t nrSubkeys;
+	uint64_t subkeys[34];
 } SpeckContext;
 
-void SPECK_init(SpeckContext* context, unsigned __int64* key, unsigned __int16 keyLen);
-void SPECK_encrypt(SpeckContext* context, unsigned __int64* block, unsigned __int64* out);
-void SPECK_decrypt(SpeckContext* context, unsigned __int64* block, unsigned __int64* out);
+void SPECK_init(SpeckContext* context, uint64_t* key, uint16_t keyLen);
+void SPECK_encrypt(SpeckContext* context, uint64_t* block, uint64_t* out);
+void SPECK_decrypt(SpeckContext* context, uint64_t* block, uint64_t* out);
 
 void SPECK_main(void);

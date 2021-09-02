@@ -18,7 +18,7 @@
 
 #define NR_ROUNDS 16
 
-static const unsigned __int32 RC[] =
+static const uint32_t RC[] =
 {
    0x80, 0x1b, 0x36, 0x6c,
    0xd8, 0xab, 0x4d, 0x9a,
@@ -27,12 +27,12 @@ static const unsigned __int32 RC[] =
    0xd4
 };
 
-static const unsigned __int32 NULL_VECTOR[] =
+static const uint32_t NULL_VECTOR[] =
 {
 	0x00, 0x00, 0x00, 0x00
 };
 
-static void MOV_128(unsigned __int32* y, unsigned __int32* x)
+static void MOV_128(uint32_t* y, uint32_t* x)
 {
 	y[0] = x[0];
 	y[1] = x[1];
@@ -41,34 +41,34 @@ static void MOV_128(unsigned __int32* y, unsigned __int32* x)
 }
 
 // Rotate Left circular shift 32 bits
-static unsigned __int32 ROL_32(unsigned __int32 x, unsigned __int32 n)
+static uint32_t ROL_32(uint32_t x, uint32_t n)
 {
 	return x << n | x >> (32 - n);
 }
 
 // Rotate Right circular shift 32 bits
-static unsigned __int32 ROR_32(unsigned __int32 x, unsigned __int32 n)
+static uint32_t ROR_32(uint32_t x, uint32_t n)
 {
 	return x >> n | x << (32 - n);
 }
 
-static void pi1(unsigned __int32* a)
+static void pi1(uint32_t* a)
 {
 	a[1] = ROL_32(a[1], 1);
 	a[2] = ROL_32(a[2], 5);
 	a[3] = ROL_32(a[3], 2);
 }
 
-static void pi2(unsigned __int32* a)
+static void pi2(uint32_t* a)
 {
 	a[1] = ROR_32(a[1], 1);
 	a[2] = ROR_32(a[2], 5);
 	a[3] = ROR_32(a[3], 2);
 }
 
-static void gamma(unsigned __int32* a)
+static void gamma(uint32_t* a)
 {
-	unsigned __int32 tmp;
+	uint32_t tmp;
 
 	a[1] ^= ~a[3] & ~a[2];
 	a[0] ^= a[2] & a[1];
@@ -82,9 +82,9 @@ static void gamma(unsigned __int32* a)
 	a[0] ^= a[2] & a[1];
 }
 
-static void theta(unsigned __int32* k, unsigned __int32* a)
+static void theta(uint32_t* k, uint32_t* a)
 {
-	unsigned __int32 temp = a[0] ^ a[2];
+	uint32_t temp = a[0] ^ a[2];
 	temp ^= ROR_32(temp, 8) ^ ROL_32(temp, 8);
 
 	a[1] ^= temp;
@@ -102,7 +102,7 @@ static void theta(unsigned __int32* k, unsigned __int32* a)
 	a[2] ^= temp;
 }
 
-static void round(unsigned __int32* key, unsigned __int32* block, unsigned __int32 c1, unsigned __int32 c2)
+static void round(uint32_t* key, uint32_t* block, uint32_t c1, uint32_t c2)
 {
 	block[0] ^= c1;
 	theta(key, block);
@@ -112,7 +112,7 @@ static void round(unsigned __int32* key, unsigned __int32* block, unsigned __int
 	pi2(block);
 }
 
-void NOEKEON_encrypt(unsigned __int32* block, unsigned __int32* key, unsigned __int32* encryptdBlock)
+void NOEKEON_encrypt(uint32_t* block, uint32_t* key, uint32_t* encryptdBlock)
 {
 	MOV_128(encryptdBlock, block);
 	for (int i = 0; i < NR_ROUNDS; i++)
@@ -124,9 +124,9 @@ void NOEKEON_encrypt(unsigned __int32* block, unsigned __int32* key, unsigned __
 	theta(key, encryptdBlock);
 }
 
-void NOEKEON_decrypt(unsigned __int32* encryptedBlock, unsigned __int32* key, unsigned __int32* decryptedBlock)
+void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decryptedBlock)
 {
-	unsigned __int32 workingKey[4];
+	uint32_t workingKey[4];
 
 	MOV_128(decryptedBlock, encryptedBlock);
 	MOV_128(workingKey, key);
@@ -145,10 +145,10 @@ void NOEKEON_decrypt(unsigned __int32* encryptedBlock, unsigned __int32* key, un
 void NOEKEON_main(void)
 {
 	int i;
-	unsigned __int32 key[4];
-	unsigned __int32 text[4];
-	unsigned __int32 cipherText[4];
-	unsigned __int32 decryptedText[4];
+	uint32_t key[4];
+	uint32_t text[4];
+	uint32_t cipherText[4];
+	uint32_t decryptedText[4];
 
 	// key 000102030405060708090a0b0c0d0e0f
 	key[0] = 0x00010203;
