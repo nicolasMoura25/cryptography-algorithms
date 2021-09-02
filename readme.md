@@ -1,4 +1,4 @@
-#Symmetric Encryption Algorithms
+# Symmetric Encryption Algorithms
 
 | Name     | Block Length (in bits) | Key Length (in bits) |
 |----------|-------------------------|-----------------------|
