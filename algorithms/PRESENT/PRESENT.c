@@ -4,7 +4,7 @@
 *
 *			PRESENT
 *
-*	64-bits block 80-bits / 128-bits key
+*	64-bits block 80/128-bits key
 *
 *
 * This is an implementation of the cipher algorithm PRESENT
