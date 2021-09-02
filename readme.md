@@ -1,6 +1,6 @@
-Symmetric Encryption Algorithms
+#Symmetric Encryption Algorithms
 
-| Name     | Block Length (in bytes) | Key Length (in bytes) |
+| Name     | Block Length (in bits) | Key Length (in bits) |
 |----------|-------------------------|-----------------------|
 | ARIA     |           128           |          128          |
 | CAMELLIA |           128           |      128/192/256      |
