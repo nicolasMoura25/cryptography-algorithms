@@ -1,20 +1,22 @@
-#include "HIGHT.h"
+/* HIGHT.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 13/08/2021
+ *
+ * Implementation of the HIGHT block cipher with
+ * 64 bits block length and 128 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://www.iacr.org/archive/ches2006/04/04.pdf
+ *		- https://datatracker.ietf.org/doc/html/draft-kisa-hight-00#section-3.
+ *
+ * and uses other codebases as references:
+ *		- https://github.com/ilwoong/crypto-primitives/tree/master/hight
+ *		- https://github.com/ssrini14/Cryptography/blob/master/code/java/HIGHT.java
+ *
+ */
 
-/*
-*
-*			HIGHT
-*
-*	64-bits block 128-bits key
-*
-*
-* This is an implementation of the cipher algorithm HIGHT
-*
-* Implementation References:
-* - https://www.iacr.org/archive/ches2006/04/04.pdf
-* - https://datatracker.ietf.org/doc/html/draft-kisa-hight-00#section-3.2
-* - https://github.com/ilwoong/crypto-primitives/tree/master/hight
-* - https://github.com/ssrini14/Cryptography/blob/master/code/java/HIGHT.java
-*/
+#include "HIGHT.h"
 
 #define NR_ROUNDS 32
 

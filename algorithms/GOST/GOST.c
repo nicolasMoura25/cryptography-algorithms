@@ -1,20 +1,20 @@
-#include "GOST.h"
+/* GOST.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 06/06/2021
+ *
+ * Implementation of the GOST block cipher with
+ * 64 bits block length and 256 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://datatracker.ietf.org/doc/html/rfc5830
+ *
+ * and uses other codebases as references:
+ *		- https://github.com/rbingabo/GOST-block-cipher
+ *
+ */
 
-/*
-*
-* 			GOST
-*
-*	64-bits block 256-bits key
-*
-*
-* This is an implementation of the cipher algorithm GOST 28147-89 in Electronic Codebook Mode
-*
-* Implementation References:
-* - https://datatracker.ietf.org/doc/html/rfc5830
-* - https://github.com/rbingabo/GOST-block-cipher
-* -  B.Shneier, ”Applied Cryptography”, John Wiley & Sons, pp. 331-334
-*		(https://mrajacse.files.wordpress.com/2012/01/applied-cryptography-2nd-ed-b-schneier.pdf pag. 277)
-*/
+#include "GOST.h"
 
 uint32_t CM1;
 uint32_t CM2;

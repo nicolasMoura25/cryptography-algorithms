@@ -1,3 +1,10 @@
+/* NOEKEON.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 27/07/2021
+ *
+ */
+
 #pragma once
 
 #include <stdio.h>

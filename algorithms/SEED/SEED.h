@@ -1,3 +1,10 @@
+/* SEED.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 15/08/2021
+ *
+ */
+
 #pragma once
 
 #include <stdio.h>

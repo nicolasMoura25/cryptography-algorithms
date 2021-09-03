@@ -1,20 +1,22 @@
-#include "SEED.h"
+/* SEED.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 15/08/2021
+ *
+ * Implementation of the SEED block cipher with
+ * 128 bits block length and 128 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://datatracker.ietf.org/doc/html/rfc4269
+ *
+ * and uses other codebases as references:
+ *		- https://seed.kisa.or.kr/kisa/algorithm/EgovSeedInfo.do
+*		- https://www.oryx-embedded.com/doc/seed_8c_source.html
+*		- https://github.com/gitpan/Crypt-SEED
+ *
+ */
 
-/*
-*
-*			SEED
-*
-*	128-bits block 128-bits key
-*
-*
-* This is an implementation of the cipher algorithm SEED
-*
-* Implementation References:
-* - https://datatracker.ietf.org/doc/html/rfc4269
-* - https://seed.kisa.or.kr/kisa/algorithm/EgovSeedInfo.do
-* - https://www.oryx-embedded.com/doc/seed_8c_source.html
-* - https://github.com/gitpan/Crypt-SEED
-*/
+#include "SEED.h"
 
 #define NR_ROUNDS 16
 

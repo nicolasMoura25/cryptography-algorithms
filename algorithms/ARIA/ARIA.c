@@ -1,19 +1,21 @@
-#include "ARIA.h"
+/* ARIA.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 20/06/2021
+ *
+ * Implementation of the ARIA block cipher with
+ * 128 bits block length and 128 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://datatracker.ietf.org/doc/html/rfc5794#section-2.4.3
+ *
+ * and uses other codebases as references:
+ *		- https://www.oryx-embedded.com/doc/aria_8c_source.html
+ *		- https://github.com/dcurrie/aria-crypto/blob/master/aria.c
+ *
+ */
 
-/*
-*
-*			ARIA
-*
-*	128-bits block 128-bits key
-*
-*
-* This is an implementation of the cipher algorithm ARIA
-*
-* Implementation References:
-* - https://datatracker.ietf.org/doc/html/rfc5794#section-2.4.3
-* - https://www.oryx-embedded.com/doc/aria_8c_source.html
-* - https://github.com/dcurrie/aria-crypto/blob/master/aria.c
-*/
+#include "ARIA.h"
 
 // constants
 const uint32_t C1[4] = { 0x517cc1b7, 0x27220a94, 0xfe13abe8, 0xfa9a6ee0 };

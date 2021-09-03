@@ -1,20 +1,22 @@
-#include "NOEKEON.h"
+/* NOEKEON.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 27/07/2021
+ *
+ * Implementation of the NOEKEON block cipher with
+ * 128 bits block length and 128 bits key length.
+ *
+ * This code follows a specification:
+ *		- http://gro.noekeon.org/Noekeon-spec.pdf
+ *
+ * and uses other codebases as references:
+ *		- https://github.com/jl777/libjl777/blob/master/NXTservices/noekeon.c
+ *		- https://github.com/stamparm/cryptospecs/blob/master/symmetrical/sources/noekeon.c
+ *		- https://github.com/cantora/avr-crypto-lib/blob/master/noekeon/noekeon.c
+ *
+ */
 
-/*
-*
-*			NOEKEON
-*
-*	128-bits block 128-bits key
-*
-*
-* This is an implementation of the cipher algorithm NOEKEON
-*
-* Implementation References:
-* - https://github.com/jl777/libjl777/blob/master/NXTservices/noekeon.c
-* - https://github.com/stamparm/cryptospecs/blob/master/symmetrical/sources/noekeon.c
-* - http://gro.noekeon.org/Noekeon-spec.pdf
-* - https://github.com/cantora/avr-crypto-lib/blob/master/noekeon/noekeon.c
-*/
+#include "NOEKEON.h"
 
 #define NR_ROUNDS 16
 

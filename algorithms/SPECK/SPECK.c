@@ -1,18 +1,20 @@
-#include "SPECK.h"
+/* SPECK.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 08/08/2021
+ *
+ * Implementation of the SPECK block cipher with
+ * 128 bits block length and 128/192/256 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://eprint.iacr.org/2013/404.pdf
+ *
+ * and uses other codebases as references:
+ *		- https://github.com/nsacyber/simon-speck-supercop/tree/master/crypto_stream
+ *
+ */
 
-/*
-*
-*			SPECK
-*
-*	128-bits block 128/192/256-bits key
-*
-*
-* This is an implementation of the cipher algorithm SPECK
-*
-* Implementation References:
-* - https://eprint.iacr.org/2013/404.pdf
-* - https://github.com/nsacyber/simon-speck-supercop/tree/master/crypto_stream
-*/
+#include "SPECK.h"
 
 // Rotate Left circular shift 32 bits
 static uint64_t ROL_64(uint64_t x, uint32_t n)

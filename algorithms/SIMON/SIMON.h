@@ -1,3 +1,10 @@
+/* SIMON.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 09/08/2021
+ *
+ */
+
 #pragma once
 
 #include <stdio.h>

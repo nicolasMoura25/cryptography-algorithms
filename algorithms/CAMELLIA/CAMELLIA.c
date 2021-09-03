@@ -1,21 +1,22 @@
-#include "CAMELLIA.h"
+/* CAMELLIA.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 08/08/2021
+ *
+ * Implementation of the CAMELLIA block cipher with
+ * 128 bits block length and 128/192/256 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://datatracker.ietf.org/doc/html/rfc3713
+ *		- https://www.cryptrec.go.jp/en/cryptrec_03_spec_cypherlist_files/PDF/06_01espec.pdf
+ *
+ * and uses other codebases as references:
+ *		- https://www.oryx-embedded.com/doc/camellia_8h_source.html
+ *		- https://github.com/Varbin/python-camellia/blob/master/src/_camellia_build/camellia.c
+ *
+ */
 
-/*
-*
-*			CAMELLIA
-*
-*	128-bits block 128/192/256-bits key
-*
-*
-* This is an implementation of the cipher algorithm CAMELLIA
-*
-* Implementation References:
-* - https://datatracker.ietf.org/doc/html/rfc3713
-* - https://www.cryptrec.go.jp/en/cryptrec_03_spec_cypherlist_files/PDF/06_01espec.pdf
-* - https://info.isl.ntt.co.jp/crypt/camellia/dl/reference/sac_camellia.pdf
-* - https://www.oryx-embedded.com/doc/camellia_8h_source.html
-* - https://github.com/Varbin/python-camellia/blob/master/src/_camellia_build/camellia.c
-*/
+#include "CAMELLIA.h"
 
 static const uint64_t sigma[6] =
 {

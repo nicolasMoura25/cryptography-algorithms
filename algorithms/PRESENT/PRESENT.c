@@ -1,20 +1,22 @@
-#include "PRESENT.h"
+/* PRESENT.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 24/07/2021
+ *
+ * Implementation of the PRESENT block cipher with
+ * 64 bits block length and 80/128 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://www.iacr.org/archive/ches2007/47270450/47270450.pdf
+ *
+ * and uses other codebases as references:
+ *		- https://github.com/kurtfu/present
+ *		- https://www.oryx-embedded.com/doc/present_8c_source.html
+ *		- https://github.com/Pepton21/present-cipher
+ *
+ */
 
-/*
-*
-*			PRESENT
-*
-*	64-bits block 80/128-bits key
-*
-*
-* This is an implementation of the cipher algorithm PRESENT
-*
-* Implementation References:
-* - https://www.iacr.org/archive/ches2007/47270450/47270450.pdf
-* - https://github.com/kurtfu/present
-* - https://www.oryx-embedded.com/doc/present_8c_source.html
-* - https://github.com/Pepton21/present-cipher
-*/
+#include "PRESENT.h"
 
 #define NR_ROUNDS 31
 

@@ -1,3 +1,10 @@
+/* CAMELLIA.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 08/08/2021
+ *
+ */
+
 #pragma once
 
 #include <stdio.h>

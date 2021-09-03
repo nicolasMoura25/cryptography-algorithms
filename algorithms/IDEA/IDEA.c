@@ -1,20 +1,21 @@
-#include "IDEA.h"
+/* IDEA.c
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 11/07/2021
+ *
+ * Implementation of the IDEA block cipher with
+ * 64 bits block length and 128 bits key length.
+ *
+ * This code follows a specification:
+ *		- https://github.com/stamparm/cryptospecs/blob/master/symmetrical/specs/idea.pdf
+ *
+ * and uses other codebases as references:
+ *		- https://github.com/stamparm/cryptospecs/blob/master/symmetrical/sources/idea.c
+ *		- https://github.com/bgreenlee/PassKeeper/blob/master/CRYPTLIB/IDEA/IDEA.C
+ *
+ */
 
-/*
-*
-* 			IDEA
-*
-*	64-bits block 128-bits key
-*
-*
-* This is an implementation of the cipher algorithm IDEA
-*
-* Implementation References:
-* - https://github.com/stamparm/cryptospecs/blob/master/symmetrical/specs/idea.pdf
-* - https://github.com/stamparm/cryptospecs/blob/master/symmetrical/sources/idea.c
-* - https://github.com/bgreenlee/PassKeeper/blob/master/CRYPTLIB/IDEA/IDEA.C
-* - https://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=B830DE37452CA41AE7336F3C1DA326AA?doi=10.1.1.14.3451&rep=rep1&type=pdf
-*/
+#include "IDEA.h"
 
 #define NR_ROUNDS 8
 #define ENCRYPTION_KEY_LEN 6 * NR_ROUNDS + 4 // 52 subkeys

@@ -1,3 +1,14 @@
+/* main.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 06/06/2021
+ * 
+ * This main is used to call the inner main functions of
+ * each block cipher in order to validate them and visualize
+ * the tests.
+ *
+ */
+
 #include <stdio.h>
 #include "algorithms/GOST/GOST.h"
 #include "algorithms/ARIA/ARIA.h"

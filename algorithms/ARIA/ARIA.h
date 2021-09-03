@@ -1,3 +1,10 @@
+/* ARIA.h
+*
+ * Author: Vinicius Borba da Rocha
+ * Created: 20/06/2021
+ *
+ */
+
 #pragma once
 
 #include <stdio.h>
