@@ -16,6 +16,7 @@
  */
 
 #include "ARIA.h"
+#include "../../CTR.h"
 
 // constants
 const uint32_t C1[4] = { 0x517cc1b7, 0x27220a94, 0xfe13abe8, 0xfa9a6ee0 };
@@ -519,7 +520,7 @@ void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P)
 	XOR_128(P, context->dks[subkey++]);
 }
 
-void ARIA_main(void)
+CTRCounter ARIA_main(CTRCounter ctrNonce)
 {
 	AriaContext context;
 	int i;
@@ -528,14 +529,33 @@ void ARIA_main(void)
 	uint32_t cipherText[4];
 	uint32_t expectedCipherText[4];
 	uint32_t decryptedText[4];
-
-	// *** test for 128-bits key ***
-
+	
 	// key 000102030405060708090a0b0c0d0e0f
 	key[0] = 0x00010203;
 	key[1] = 0x04050607;
 	key[2] = 0x08090a0b;
 	key[3] = 0x0c0d0e0f;
+
+	// Aria CTR
+	text[0] = ctrNonce.ctrNonce[0];
+	text[1] = ctrNonce.ctrNonce[1];
+	text[2] = ctrNonce.ctrNonce[2];
+	text[3] = ctrNonce.ctrNonce[3];
+	
+	ARIA_init(&context, key, 128);
+	ARIA_encrypt(&context, text, cipherText);
+
+	ctrNonce.cipherText[0] = cipherText[0];
+	ctrNonce.cipherText[1] = cipherText[1];
+	ctrNonce.cipherText[2] = cipherText[2];
+	ctrNonce.cipherText[3] = cipherText[3];
+	
+	return ctrNonce;
+
+
+	// *** test for 128-bits key ***
+
+
 
 	// text 00112233445566778899aabbccddeeff
 	text[0] = 0x00112233;
@@ -705,4 +725,6 @@ void ARIA_main(void)
 		printf("%08x ", decryptedText[i]);
 	}
 	printf("\n");
+	
+
 }
