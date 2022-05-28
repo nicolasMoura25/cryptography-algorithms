@@ -49,12 +49,7 @@ int main()
 			ctrCounter.ctrNonce[i] = newNonce.result[i];
 			printf("%08x \n", ctrCounter.ctrNonce[i]); // helpful on debug 
 		}
-		printf("antes dee ir\n");
-		for (int i = 0; i < 4; i++)
-		{			
-			printf("text:%x \n", ctrCounter.text[i]); // helpful on debug
-			printf("nonce:%x \n", ctrCounter.ctrNonce[i]); // helpful on debug 
-		}
+
 
 		CTRMode_main(ctrCounter);
 
@@ -122,9 +117,9 @@ void readNonce(int position, Block128* block128){
 		printf("Error in opening file\n");
 		exit(1);
 	}
-		
+	
 	while(fscanf(file, "%x", &NonceRead) != EOF){
-		int cont = 0;
+		
 		if(cont >= (position-1)*4 && cont < position*4){
 			//printf("Nonce: %x\n",dataRead); // debub
 			block128->result[i] = NonceRead;

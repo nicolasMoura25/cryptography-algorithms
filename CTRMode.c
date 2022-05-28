@@ -48,7 +48,7 @@ void CTRMode_main(CTRCounter ctrCounter){
 	ctrCounter.cipherText[2] = ctrCounter.cipherTemp[2] ^ ctrCounter.cipherText[2];
 	ctrCounter.cipherText[3] = ctrCounter.cipherTemp[3] ^ ctrCounter.cipherText[3];
 	
-	printf("Resultado FINAL do CTR: \t\t\t\t\n");
+	printf("\nResultado FINAL do CTR Após decriptografia: \t\t\t\t\n");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x \n", ctrCounter.cipherText[i]);
