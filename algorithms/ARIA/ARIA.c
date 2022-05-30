@@ -520,211 +520,44 @@ void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P)
 	XOR_128(P, context->dks[subkey++]);
 }
 
-CTRCounter ARIA_main(CTRCounter ctrNonce)
+void ARIA_main(CTRCounter* ctrNonce, int key_size)
 {
 	AriaContext context;
-	int i;
 	uint32_t key[8];
-	uint32_t text[4];
-	uint32_t cipherText[4];
-	uint32_t expectedCipherText[4];
-	uint32_t decryptedText[4];
 	
-	// key 000102030405060708090a0b0c0d0e0f
-	key[0] = 0x00010203;
-	key[1] = 0x04050607;
-	key[2] = 0x08090a0b;
-	key[3] = 0x0c0d0e0f;
-
-	// Aria CTR
-	text[0] = ctrNonce.ctrNonce[0];
-	text[1] = ctrNonce.ctrNonce[1];
-	text[2] = ctrNonce.ctrNonce[2];
-	text[3] = ctrNonce.ctrNonce[3];
+	switch (key_size)
+	{
+	case 128 :
+		key[0] = 0x00010203;
+		key[1] = 0x04050607;
+		key[2] = 0x08090a0b;
+		key[3] = 0x0c0d0e0f;		
+		break;
+	case 192 :
+		key[0] = 0x00010203;
+		key[1] = 0x04050607;
+		key[2] = 0x08090a0b;
+		key[3] = 0x0c0d0e0f;
+		key[4] = 0x10111213;
+		key[5] = 0x14151617;
+		break;
+	case 256 :
+		key[0] = 0x00010203;
+		key[1] = 0x04050607;
+		key[2] = 0x08090a0b;
+		key[3] = 0x0c0d0e0f;
+		key[4] = 0x10111213;
+		key[5] = 0x14151617;
+		key[6] = 0x18191a1b;
+		key[7] = 0x1c1d1e1f;
+		break;
 	
-	ARIA_init(&context, key, 128);
-	ARIA_encrypt(&context, text, cipherText);
-
-	ctrNonce.cipherText[0] = cipherText[0];
-	ctrNonce.cipherText[1] = cipherText[1];
-	ctrNonce.cipherText[2] = cipherText[2];
-	ctrNonce.cipherText[3] = cipherText[3];
+	default:
+		break;
+	}
 	
-	return ctrNonce;
-
-
-	// *** test for 128-bits key ***
-
-
-
-	// text 00112233445566778899aabbccddeeff
-	text[0] = 0x00112233;
-	text[1] = 0x44556677;
-	text[2] = 0x8899aabb;
-	text[3] = 0xccddeeff;
-
-	// expected encryption text d718fbd6ab644c739da95f3be6451778
-	expectedCipherText[0] = 0xd718fbd6;
-	expectedCipherText[1] = 0xab644c73;
-	expectedCipherText[2] = 0x9da95f3b;
-	expectedCipherText[3] = 0xe6451778;
-
-	ARIA_init(&context, key, 128);
-	ARIA_encrypt(&context, text, cipherText);
-	ARIA_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nARIA 128-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** test for 192-bits key ***
-
-	// key 000102030405060708090a0b0c0d0e0f 1011121314151617
-	key[0] = 0x00010203;
-	key[1] = 0x04050607;
-	key[2] = 0x08090a0b;
-	key[3] = 0x0c0d0e0f;
-	key[4] = 0x10111213;
-	key[5] = 0x14151617;
-
-	// expected encryption text 26449c1805dbe7aa25a468ce263a9e79
-	expectedCipherText[0] = 0x26449c18;
-	expectedCipherText[1] = 0x05dbe7aa;
-	expectedCipherText[2] = 0x25a468ce;
-	expectedCipherText[3] = 0x263a9e79;
-
-	ARIA_init(&context, key, 192);
-	ARIA_encrypt(&context, text, cipherText);
-	ARIA_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nARIA 192-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 6; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** test for 256-bits key ***
-
-	// key 000102030405060708090a0b0c0d0e0f 101112131415161718191a1b1c1d1e1f
-	key[0] = 0x00010203;
-	key[1] = 0x04050607;
-	key[2] = 0x08090a0b;
-	key[3] = 0x0c0d0e0f;
-	key[4] = 0x10111213;
-	key[5] = 0x14151617;
-	key[6] = 0x18191a1b;
-	key[7] = 0x1c1d1e1f;
-
-	// expected encryption text f92bd7c7 9fb72e2f 2b8f80c1 972d24fc
-	expectedCipherText[0] = 0xf92bd7c7;
-	expectedCipherText[1] = 0x9fb72e2f;
-	expectedCipherText[2] = 0x2b8f80c1;
-	expectedCipherText[3] = 0x972d24fc;
-
-	ARIA_init(&context, key, 256);
-	ARIA_encrypt(&context, text, cipherText);
-	ARIA_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nARIA 256-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
+	ARIA_init(&context, key, key_size);
+	ARIA_encrypt(&context, ctrNonce->ctrNonce, ctrNonce->cipherText);
 	
-
+	return;
 }

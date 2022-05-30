@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include "../../CTR.h"
 
 typedef struct
 {
@@ -20,4 +21,4 @@ void SPECK_init(SpeckContext* context, uint64_t* key, uint16_t keyLen);
 void SPECK_encrypt(SpeckContext* context, uint64_t* block, uint64_t* out);
 void SPECK_decrypt(SpeckContext* context, uint64_t* block, uint64_t* out);
 
-void SPECK_main(void);
+void SPECK_main(CTRCounter* ctrNonce, int key_size);

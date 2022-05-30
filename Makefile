@@ -1,7 +1,7 @@
 all: app
 
-app: ARIA.o CAMELLIA.o GOST.o HIGHT.o IDEA.o NOEKEON.o PRESENT.o SEED.o SIMON.o SPECK.o main.o CTRMode.o
-	gcc -Wall -o app ARIA.o CAMELLIA.o GOST.o HIGHT.o IDEA.o NOEKEON.o PRESENT.o SEED.o SIMON.o SPECK.o main.o CTRMode.o
+app: ARIA.o CAMELLIA.o GOST.o HIGHT.o IDEA.o NOEKEON.o PRESENT.o SEED.o SIMON.o SPECK.o CTRMode.o main.o
+	gcc -Wall -o app ARIA.o CAMELLIA.o GOST.o HIGHT.o IDEA.o NOEKEON.o PRESENT.o SEED.o SIMON.o SPECK.o CTRMode.o main.o
 	
 ARIA.o: algorithms/ARIA/ARIA.c
 	gcc -c -Wall algorithms/ARIA/ARIA.c
@@ -33,11 +33,11 @@ SIMON.o: algorithms/SIMON/SIMON.c
 SPECK.o: algorithms/SPECK/SPECK.c
 	gcc -c -Wall algorithms/SPECK/SPECK.c
 
+CTRMode.o: CTRMode.c
+	gcc -c -Wall CTRMode.c
+
 main.o: main.c
 	gcc -c -Wall main.c
-
-CTR.o: CTRMode.c
-	gcc -c -wall CTRMode.c
 
 clean:
 	rm -f *.o

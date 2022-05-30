@@ -477,176 +477,49 @@ void CAMELLIA_decrypt(const CamelliaContext* context, const uint64_t* block, uin
 	out[1] = D[0];
 }
 
-void CAMELLIA_main(void)
+void CAMELLIA_main(CTRCounter* ctrNonce, int key_size)
 {
 	CamelliaContext context;
-	int i;
 	uint64_t key[4];
 	uint64_t text[2];
 	uint64_t cipherText[2];
-	uint64_t expectedCipherText[2];
-	uint64_t decryptedText[2];
+	uint64_t val1 = ctrNonce->text[0];
+	uint64_t val2 = ctrNonce->text[1];
+	uint64_t val3 = ctrNonce->text[2];
+	uint64_t val4 = ctrNonce->text[3];
 
-	// *** test for 128-bits key ***
-
-	// key 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
-	key[0] = 0x0123456789abcdef;
-	key[1] = 0xfedcba9876543210;
-
-	// text 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
-	text[0] = 0x0123456789abcdef;
-	text[1] = 0xfedcba9876543210;
-
-	// expected encrypted text 67 67 31 38 54 96 69 73 08 57 06 56 48 ea be 43
-	expectedCipherText[0] = 0x6767313854966973;
-	expectedCipherText[1] = 0x0857065648eabe43;
-
-	CAMELLIA_init(&context, key, 128);
-
+	text[0] = (val2 << 32) | val1;
+	text[1] = (val4 << 32) | val3;
+	
+	switch (key_size)
+	{
+	case 128 :
+		key[0] = 0x0123456789abcdef;
+		key[1] = 0xfedcba9876543210;		
+		break;
+	case 192 :
+		key[0] = 0x0123456789abcdef;
+		key[1] = 0xfedcba9876543210;
+		key[2] = 0x0011223344556677;
+		break;
+	case 256 :
+		key[0] = 0x0123456789abcdef;
+		key[1] = 0xfedcba9876543210;
+		key[2] = 0x0011223344556677;
+		key[3] = 0x8899aabbccddeeff;
+		break;
+	
+	default:
+		break;
+	}
+	
+	CAMELLIA_init(&context, key, key_size);
 	CAMELLIA_encrypt(&context, text, cipherText);
-	CAMELLIA_decrypt(&context, cipherText, decryptedText);
 
-	printf("\nCAMELLIA 128-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 192-bits key test ***
-
-	// key 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10 00 11 22 33 44 55 66 77
-	key[0] = 0x0123456789abcdef;
-	key[1] = 0xfedcba9876543210;
-	key[2] = 0x0011223344556677;
-
-	// expected encrypted text b4 99 34 01 b3 e9 96 f8 4e e5 ce e7 d7 9b 09 b9
-	expectedCipherText[0] = 0xb4993401b3e996f8;
-	expectedCipherText[1] = 0x4ee5cee7d79b09b9;
-
-	CAMELLIA_init(&context, key, 192);
-
-	CAMELLIA_encrypt(&context, text, cipherText);
-	CAMELLIA_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nCAMELLIA 192-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 3; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 256-bits key test ***
-
-	// key 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10 00 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff
-	key[0] = 0x0123456789abcdef;
-	key[1] = 0xfedcba9876543210;
-	key[2] = 0x0011223344556677;
-	key[3] = 0x8899aabbccddeeff;
-
-	// expected encrypted text 9a cc 23 7d ff 16 d7 6c 20 ef 7c 91 9e 3a 75 09
-	expectedCipherText[0] = 0x9acc237dff16d76c;
-	expectedCipherText[1] = 0x20ef7c919e3a7509;
-
-	CAMELLIA_init(&context, key, 256);
-
-	CAMELLIA_encrypt(&context, text, cipherText);
-	CAMELLIA_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nCAMELLIA 256-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0]);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0] >> 32);
+	ctrNonce->cipherText[2] = (uint32_t)(cipherText[1]);
+	ctrNonce->cipherText[3] = (uint32_t)(cipherText[1] >> 32);
+	
+	return;
 }

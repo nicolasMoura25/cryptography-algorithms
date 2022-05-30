@@ -144,56 +144,16 @@ void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decrypte
 	decryptedBlock[0] ^= RC[0];
 }
 
-void NOEKEON_main(void)
+void NOEKEON_main(CTRCounter* ctrNonce, int key_size)
 {
-	int i;
 	uint32_t key[4];
-	uint32_t text[4];
-	uint32_t cipherText[4];
-	uint32_t decryptedText[4];
 
-	// key 000102030405060708090a0b0c0d0e0f
 	key[0] = 0x00010203;
 	key[1] = 0x04050607;
 	key[2] = 0x08090a0b;
 	key[3] = 0x0c0d0e0f;
-
-	// text 00112233445566778899aabbccddeeff
-	text[0] = 0x00112233;
-	text[1] = 0x44556677;
-	text[2] = 0x8899aabb;
-	text[3] = 0xccddeeff;
-
-	NOEKEON_encrypt(text, key, cipherText);
-	NOEKEON_decrypt(cipherText, key, decryptedText);
-
-	printf("\nNOEKEON \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
+	
+	NOEKEON_encrypt(ctrNonce->ctrNonce, key, ctrNonce->cipherText);
+	
+	return;
 }

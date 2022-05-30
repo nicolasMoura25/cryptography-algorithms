@@ -23,4 +23,4 @@ void ARIA_init(AriaContext* context, const uint32_t* key, uint32_t keyLength);
 void ARIA_encrypt(AriaContext* context, uint32_t* block, uint32_t* P);
 void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P);
 
-CTRCounter ARIA_main(CTRCounter ctrCounter);
+void ARIA_main(CTRCounter* ctrCounter, int key_size);

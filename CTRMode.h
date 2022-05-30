@@ -15,4 +15,4 @@
 //void ARIA_encrypt(AriaContext* context, uint32_t* block, uint32_t* P);
 //void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P);
 
-void CTRMode_main(CTRCounter ctrCounter);
+void CTRMode_main(CTRCounter ctrCounter, enum Algorithm algorithm);

@@ -136,184 +136,50 @@ void SPECK_decrypt(SpeckContext* context, uint64_t* block, uint64_t* out)
 	out[1] = y;
 }
 
-void SPECK_main(void)
+void SPECK_main(CTRCounter* ctrNonce, int key_size)
 {
 	SpeckContext context;
-	int i;
 	uint64_t key[4];
 	uint64_t text[2];
 	uint64_t cipherText[2];
-	uint64_t expectedCipherText[2];
-	uint64_t decryptedText[2];
+	uint64_t val1 = ctrNonce->text[0];
+	uint64_t val2 = ctrNonce->text[1];
+	uint64_t val3 = ctrNonce->text[2];
+	uint64_t val4 = ctrNonce->text[3];
+	
+	text[0] = (val2 << 32) | val1;
+	text[1] = (val4 << 32) | val3;
+	
+	switch (key_size)
+	{
+	case 128 :
+		key[0] = 0x0f0e0d0c0b0a0908;
+		key[1] = 0x0706050403020100;		
+		break;
+	case 192 :
+		key[0] = 0x1716151413121110;
+		key[1] = 0x0f0e0d0c0b0a0908;
+		key[2] = 0x0706050403020100;
+		break;
+	case 256 :
+		key[0] = 0x1f1e1d1c1b1a1918;
+		key[1] = 0x1716151413121110;
+		key[2] = 0x0f0e0d0c0b0a0908;
+		key[3] = 0x0706050403020100;
+		break;
+	
+	default:
+		break;
+	}
 
-	// test for 128-bits key
-
-	// key 0f0e0d0c0b0a0908 0706050403020100
-	key[0] = 0x0f0e0d0c0b0a0908;
-	key[1] = 0x0706050403020100;
-
-	// text 6c61766975716520 7469206564616d20
-	text[0] = 0x6c61766975716520;
-	text[1] = 0x7469206564616d20;
-
-	// expected encrypted text a65d985179783265 7860fedf5c570d18
-	expectedCipherText[0] = 0xa65d985179783265;
-	expectedCipherText[1] = 0x7860fedf5c570d18;
-
-	SPECK_init(&context, key, 128);
-
+	SPECK_init(&context, key, key_size);
 	SPECK_encrypt(&context, text, cipherText);
-	SPECK_decrypt(&context, cipherText, decryptedText);
 
-	printf("SPECK 128-bits key \n\n");
 
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 192-bits key test ***
-
-	// key 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
-	key[0] = 0x1716151413121110;
-	key[1] = 0x0f0e0d0c0b0a0908;
-	key[2] = 0x0706050403020100;
-
-	// text 7261482066656968 43206f7420746e65
-	text[0] = 0x7261482066656968;
-	text[1] = 0x43206f7420746e65;
-
-	// expected encrypted text 1be4cf3a13135566 f9bc185de03c1886
-	expectedCipherText[0] = 0x1be4cf3a13135566;
-	expectedCipherText[1] = 0xf9bc185de03c1886;
-
-	SPECK_init(&context, key, 192);
-
-	SPECK_encrypt(&context, text, cipherText);
-	SPECK_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nSPECK 192-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 3; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 256-bits key test ***
-
-	// key  1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
-	key[0] = 0x1f1e1d1c1b1a1918;
-	key[1] = 0x1716151413121110;
-	key[2] = 0x0f0e0d0c0b0a0908;
-	key[3] = 0x0706050403020100;
-
-	// text 65736f6874206e49 202e72656e6f6f70
-	text[0] = 0x65736f6874206e49;
-	text[1] = 0x202e72656e6f6f70;
-
-	// expected encrypted text 4109010405c0f53e 4eeeb48d9c188f43
-	expectedCipherText[0] = 0x4109010405c0f53e;
-	expectedCipherText[1] = 0x4eeeb48d9c188f43;
-
-	SPECK_init(&context, key, 256);
-
-	SPECK_encrypt(&context, text, cipherText);
-	SPECK_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nSPECK 256-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0]);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0] >> 32);
+	ctrNonce->cipherText[2] = (uint32_t)(cipherText[1]);
+	ctrNonce->cipherText[3] = (uint32_t)(cipherText[1] >> 32);
+	
+	return;
 }

@@ -172,184 +172,49 @@ void SIMON_decrypt(SimonContext* context, uint64_t* block, uint64_t* out)
 	out[1] = y;
 }
 
-void SIMON_main(void)
+void SIMON_main(CTRCounter* ctrNonce, int key_size)
 {
 	SimonContext context;
-	int i;
 	uint64_t key[4];
 	uint64_t text[2];
 	uint64_t cipherText[2];
-	uint64_t expectedCipherText[2];
-	uint64_t decryptedText[2];
+	uint64_t val1 = ctrNonce->text[0];
+	uint64_t val2 = ctrNonce->text[1];
+	uint64_t val3 = ctrNonce->text[2];
+	uint64_t val4 = ctrNonce->text[3];
 
-	// test for 128-bits key
+	text[0] = (val2 << 32) | val1;
+	text[1] = (val4 << 32) | val3;
+	
+	switch (key_size)
+	{
+	case 128 :
+		key[0] = 0x0f0e0d0c0b0a0908;
+		key[1] = 0x0706050403020100;		
+		break;
+	case 192 :
+		key[0] = 0x1716151413121110;
+		key[1] = 0x0f0e0d0c0b0a0908;
+		key[2] = 0x0706050403020100;
+		break;
+	case 256 :
+		key[0] = 0x1f1e1d1c1b1a1918;
+		key[1] = 0x1716151413121110;
+		key[2] = 0x0f0e0d0c0b0a0908;
+		key[3] = 0x0706050403020100;
+		break;
+	
+	default:
+		break;
+	}
 
-	// key 0f0e0d0c0b0a0908 0706050403020100
-	key[0] = 0x0f0e0d0c0b0a0908;
-	key[1] = 0x0706050403020100;
-
-	// text 6373656420737265 6c6c657661727420
-	text[0] = 0x6373656420737265;
-	text[1] = 0x6c6c657661727420;
-
-	// expected encrypted text 49681b1e1e54fe3f 65aa832af84e0bbc
-	expectedCipherText[0] = 0x49681b1e1e54fe3f;
-	expectedCipherText[1] = 0x65aa832af84e0bbc;
-
-	SIMON_init(&context, key, 128);
-
+	SIMON_init(&context, key, key_size);
 	SIMON_encrypt(&context, text, cipherText);
-	SIMON_decrypt(&context, cipherText, decryptedText);
 
-	printf("\nSIMON 128-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 192-bits key test ***
-
-	// key 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
-	key[0] = 0x1716151413121110;
-	key[1] = 0x0f0e0d0c0b0a0908;
-	key[2] = 0x0706050403020100;
-
-	// text 206572656874206e 6568772065626972
-	text[0] = 0x206572656874206e;
-	text[1] = 0x6568772065626972;
-
-	// expected encrypted text c4ac61effcdc0d4f 6c9c8d6e2597b85b
-	expectedCipherText[0] = 0xc4ac61effcdc0d4f;
-	expectedCipherText[1] = 0x6c9c8d6e2597b85b;
-
-	SIMON_init(&context, key, 192);
-
-	SIMON_encrypt(&context, text, cipherText);
-	SIMON_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nSIMON 192-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 3; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 256-bits key test ***
-
-	// key  1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
-	key[0] = 0x1f1e1d1c1b1a1918;
-	key[1] = 0x1716151413121110;
-	key[2] = 0x0f0e0d0c0b0a0908;
-	key[3] = 0x0706050403020100;
-
-	// text 74206e69206d6f6f 6d69732061207369
-	text[0] = 0x74206e69206d6f6f;
-	text[1] = 0x6d69732061207369;
-
-	// expected encrypted text 8d2b5579afc8a3a0 3bf72a87efe7b868
-	expectedCipherText[0] = 0x8d2b5579afc8a3a0;
-	expectedCipherText[1] = 0x3bf72a87efe7b868;
-
-	SIMON_init(&context, key, 256);
-
-	SIMON_encrypt(&context, text, cipherText);
-	SIMON_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nSIMON 256-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%016llx ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 2; i++)
-	{
-		printf("%016llx ", decryptedText[i]);
-	}
-	printf("\n");
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0]);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0] >> 32);
+	ctrNonce->cipherText[2] = (uint32_t)(cipherText[1]);
+	ctrNonce->cipherText[3] = (uint32_t)(cipherText[1] >> 32);
+	
+	return;
 }

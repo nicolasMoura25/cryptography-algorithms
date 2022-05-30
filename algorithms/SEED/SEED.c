@@ -324,15 +324,10 @@ void SEED_decrypt(SeedContext* context, uint32_t* block, uint32_t* out)
 	out[3] = r1;
 }
 
-void SEED_main(void)
+void SEED_main(CTRCounter* ctrNonce, int key_size)
 {
 	SeedContext context;
-	int i;
 	uint32_t key[4];
-	uint32_t text[4];
-	uint32_t cipherText[4];
-	uint32_t expectedCipherText[4];
-	uint32_t decryptedText[4];
 
 	// key 00000000 00000000 00000000 00000000
 	key[0] = 0x00000000;
@@ -340,57 +335,6 @@ void SEED_main(void)
 	key[2] = 0x00000000;
 	key[3] = 0x00000000;
 
-	// text 00010203 04050607 08090A0B 0C0D0E0F
-	text[0] = 0x00010203;
-	text[1] = 0x04050607;
-	text[2] = 0x08090A0B;
-	text[3] = 0x0C0D0E0F;
-
-	// expected encryption text 5EBAC6E0 054E1668 19AFF1CC 6D346CDB
-	expectedCipherText[0] = 0x5EBAC6E0;
-	expectedCipherText[1] = 0x054E1668;
-	expectedCipherText[2] = 0x19AFF1CC;
-	expectedCipherText[3] = 0x6D346CDB;
-
 	SEED_init(&context, key);
-
-	SEED_encrypt(&context, text, cipherText);
-	SEED_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nSEED 128-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
+	SEED_encrypt(&context, ctrNonce->ctrNonce, ctrNonce->cipherText);
 }
