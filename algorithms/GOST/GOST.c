@@ -2,6 +2,7 @@
 *
  * Author: Vinicius Borba da Rocha
  * Created: 06/06/2021
+ * Updated: 21/05/2022 
  *
  * Implementation of the GOST block cipher with
  * 64 bits block length and 256 bits key length.

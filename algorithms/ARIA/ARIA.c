@@ -2,6 +2,7 @@
 *
  * Author: Vinicius Borba da Rocha
  * Created: 20/06/2021
+ * Updated: 21/05/2022
  *
  * Implementation of the ARIA block cipher with
  * 128 bits block length and 128 bits key length.

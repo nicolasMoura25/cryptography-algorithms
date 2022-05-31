@@ -1,9 +1,10 @@
 /* main.h
 *
- * Author: Vinicius Borba da Rocha
- * Created: 06/06/2021
+ * Authors: Vinicius Borba da Rocha; Nicolas Moura
+ * Created: 06/06/2021 - Initial Version
+ * Updated: 21/05/2021 - CTR mode Implementation
  * 
- * This main is used to call the inner main functions of
+ * This main is used to call the CTR mode and inner main functions of
  * each block cipher in order to validate them and visualize
  * the tests.
  *

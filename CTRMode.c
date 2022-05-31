@@ -1,3 +1,10 @@
+/* CTRMode.h
+*
+ * Author: Nicolas Moura
+ * Created: 21/05/2021 - CTR mode Implementation
+ *
+ */
+
 #include "CTRMode.h"
 #include "algorithms/ARIA/ARIA.h"
 
@@ -58,12 +65,9 @@ void Select_Algorithm(CTRCounter* ctrCounter, enum Algorithm algorithm){
 		case HIGHT_128 :
 			HIGHT_main(ctrCounter, 128);
 			break;
-
 		case GOST_256 :
 			GOST_main(ctrCounter, 256);
 			break;
-		
-
 		default:
 			break;
 		}
@@ -73,11 +77,10 @@ void Select_Algorithm(CTRCounter* ctrCounter, enum Algorithm algorithm){
 
 void CTRMode_main(CTRCounter ctrCounter, enum Algorithm algorithm, int SIZE){
 
-    // ENCRYPT SIDE
-	
+    // ENCRYPT SIDE	
     Select_Algorithm(&ctrCounter, algorithm);
 
-	printf("\nCYPHER BEFORE XOR: \t");
+	printf("\nCypher before XOR: \t");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x ", ctrCounter.cipherText[i]);
@@ -93,12 +96,11 @@ void CTRMode_main(CTRCounter ctrCounter, enum Algorithm algorithm, int SIZE){
 		ctrCounter.cipherTemp[3] = 0x00000000;
 	}
 
-	printf("\nCYPHER AFTER XOR: \t");
+	printf("\nCypher after XOR: \t");
 	for (int i = 0; i < 4; i++)
 	{
 		printf("%08x ", ctrCounter.cipherTemp[i]);
 	}
-
 	
 	// DECRYPT SIDE
 	Select_Algorithm(&ctrCounter, algorithm);

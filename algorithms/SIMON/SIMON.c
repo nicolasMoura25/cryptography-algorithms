@@ -2,6 +2,7 @@
 *
  * Author: Vinicius Borba da Rocha
  * Created: 09/08/2021
+ * Updated: 21/05/2022
  *
  * Implementation of the SIMON block cipher with
  * 128 bits block length and 128/192/256 bits key length.

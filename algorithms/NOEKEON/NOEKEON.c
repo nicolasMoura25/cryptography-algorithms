@@ -2,6 +2,7 @@
 *
  * Author: Vinicius Borba da Rocha
  * Created: 27/07/2021
+ * Updated: 21/05/2022
  *
  * Implementation of the NOEKEON block cipher with
  * 128 bits block length and 128 bits key length.

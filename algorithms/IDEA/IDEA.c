@@ -2,6 +2,7 @@
 *
  * Author: Vinicius Borba da Rocha
  * Created: 11/07/2021
+ * Updated: 21/05/2022
  *
  * Implementation of the IDEA block cipher with
  * 64 bits block length and 128 bits key length.
