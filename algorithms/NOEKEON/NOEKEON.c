@@ -19,6 +19,37 @@
 #include "NOEKEON.h"
 
 #define NR_ROUNDS 16
+#define STREAM (256 * 8)
+
+uint8_t LFSR() {
+
+        unsigned char in_s, cs, cp, p, nbit, s[STREAM];
+        int i, j, k=0;
+
+
+        in_s = 0xb4;     /* this can be any 8 bit value */
+        p = 0x71;        /* max length polynomial x^8+x^4+x^3+x^2+1 = 0b01110001 */
+
+        cs = in_s;      /* copy initial state */
+
+                for (j = 0;j < 8;j++,k++) {
+                        cp = nbit = cs & p;
+
+                        for (i = 1;i < 8; i++) { /* xor all bits together */
+                                nbit ^= (cp >> i);
+                        }
+                        s[k] = cs & 0x01;
+                        cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
+                }
+
+                if (cs == in_s) {
+                         return 0x00;
+                }
+		else{
+			return cs;
+		}
+
+}
 
 static const uint32_t RC[] =
 {
@@ -145,15 +176,12 @@ void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decrypte
 }
 
 void NOEKEON_main(CTRCounter* ctrNonce, int key_size)
-{
-	uint32_t key[4];
+{	
+	uint8_t counter[16];
+	for(int i=0; i<16; i++){
+		counter[i] = LFSR();
+	}
 
-	key[0] = 0x00010203;
-	key[1] = 0x04050607;
-	key[2] = 0x08090a0b;
-	key[3] = 0x0c0d0e0f;
-	
-	NOEKEON_encrypt(ctrNonce->ctrNonce, key, ctrNonce->cipherText);
-	
+	NOEKEON_encrypt(counter, ctrNonce->Key, ctrNonce->cipherText);	
 	return;
 }

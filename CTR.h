@@ -16,6 +16,7 @@ typedef struct
 	uint32_t text[4];
 	uint32_t cipherText[4];
 	uint32_t cipherTemp[4];
+	uint32_t Key[8];
 	uint8_t position;	
 } CTRCounter;
 
@@ -26,5 +27,5 @@ typedef struct
 
 
 enum Algorithm {ARIA_128, ARIA_192, ARIA_256, CAMELLIA_128, CAMELLIA_192, CAMELLIA_256, NOEKEON_128, SEED_128, SIMON_128, SIMON_192, SIMON_256,
-SPECK_128, SPECK_192, SPECK_256,GOST };
+SPECK_128, SPECK_192, SPECK_256, GOST_256, IDEA_128 };
 

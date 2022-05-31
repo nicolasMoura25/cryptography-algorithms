@@ -483,43 +483,55 @@ void CAMELLIA_main(CTRCounter* ctrNonce, int key_size)
 	uint64_t key[4];
 	uint64_t text[2];
 	uint64_t cipherText[2];
-	uint64_t val1 = ctrNonce->text[0];
-	uint64_t val2 = ctrNonce->text[1];
-	uint64_t val3 = ctrNonce->text[2];
-	uint64_t val4 = ctrNonce->text[3];
+	uint64_t val0 = ctrNonce->ctrNonce[0];
+	uint64_t val1 = ctrNonce->ctrNonce[1];
+	uint64_t val2 = ctrNonce->ctrNonce[2];
+	uint64_t val3 = ctrNonce->ctrNonce[3];
 
-	text[0] = (val2 << 32) | val1;
-	text[1] = (val4 << 32) | val3;
-	
+	uint64_t key0 = ctrNonce->Key[0];
+	uint64_t key1 = ctrNonce->Key[1];
+	uint64_t key2 = ctrNonce->Key[2];
+	uint64_t key3 = ctrNonce->Key[3];
+	uint64_t key4 = ctrNonce->Key[4];
+	uint64_t key5 = ctrNonce->Key[5];
+	uint64_t key6 = ctrNonce->Key[6];
+	uint64_t key7 = ctrNonce->Key[7];
+
+	text[0] = (val0 << 32) | val1;
+	text[1] = (val2 << 32) | val3;
+
 	switch (key_size)
 	{
 	case 128 :
-		key[0] = 0x0123456789abcdef;
-		key[1] = 0xfedcba9876543210;		
+		key[0] = (key0 << 32) | key1;
+		key[1] = (key2 << 32) | key3;
+		key[2] = 0x0000000000000000;
+		key[3] = 0x0000000000000000;		
 		break;
 	case 192 :
-		key[0] = 0x0123456789abcdef;
-		key[1] = 0xfedcba9876543210;
-		key[2] = 0x0011223344556677;
+		key[0] = (key0 << 32) | key1;
+		key[1] = (key2 << 32) | key3;
+		key[2] = (key4 << 32) | key5;
+		key[3] = 0x0000000000000000;
 		break;
 	case 256 :
-		key[0] = 0x0123456789abcdef;
-		key[1] = 0xfedcba9876543210;
-		key[2] = 0x0011223344556677;
-		key[3] = 0x8899aabbccddeeff;
+		key[0] = (key0 << 32) | key1;
+		key[1] = (key2 << 32) | key3;
+		key[2] = (key4 << 32) | key5;
+		key[3] = (key6 << 32) | key7;
 		break;
 	
 	default:
 		break;
 	}
-	
+		
 	CAMELLIA_init(&context, key, key_size);
 	CAMELLIA_encrypt(&context, text, cipherText);
 
-	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0]);
-	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0] >> 32);
-	ctrNonce->cipherText[2] = (uint32_t)(cipherText[1]);
-	ctrNonce->cipherText[3] = (uint32_t)(cipherText[1] >> 32);
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0] >> 32);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0]);
+	ctrNonce->cipherText[2] = (uint32_t)(cipherText[1] >> 32);
+	ctrNonce->cipherText[3] = (uint32_t)(cipherText[1]);
 	
 	return;
 }

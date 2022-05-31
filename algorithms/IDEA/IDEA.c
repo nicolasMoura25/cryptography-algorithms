@@ -199,72 +199,11 @@ void IDEA_decrypt(IdeaContext* context, uint16_t* encryptedBlock, uint16_t* out)
 	idea(encryptedBlock, context->decryptionKeys, out);
 }
 
-void IDEA_main(void)
+void IDEA_main(CTRCounter* ctrNonce, int key_size)
 {
 	IdeaContext context;
-	int i;
-	uint16_t key[8];
-	uint16_t text[4];
-	uint16_t cipherText[4];
-	uint16_t expectedCipherText[4];
-	uint16_t decryptedText[4];
 
-	// key 12345678
-	for (i = 1; i <= 8; i++)
-	{
-		key[i - 1] = i;
-	}
+	IDEA_init(&context, ctrNonce->Key);
+	IDEA_encrypt(&context, ctrNonce->ctrNonce, ctrNonce->cipherText);
 
-	// text 0123
-	for (i = 0; i < 4; i++)
-	{
-		text[i] = i;
-	}
-
-	// 46036071540828133
-	expectedCipherText[0] = 4603;
-	expectedCipherText[1] = 60715;
-	expectedCipherText[2] = 408;
-	expectedCipherText[3] = 28133;
-
-	IDEA_init(&context, key);
-	IDEA_encrypt(&context, text, cipherText);
-	IDEA_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nIDEA \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
 }

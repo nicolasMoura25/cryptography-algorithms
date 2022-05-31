@@ -327,14 +327,6 @@ void SEED_decrypt(SeedContext* context, uint32_t* block, uint32_t* out)
 void SEED_main(CTRCounter* ctrNonce, int key_size)
 {
 	SeedContext context;
-	uint32_t key[4];
-
-	// key 00000000 00000000 00000000 00000000
-	key[0] = 0x00000000;
-	key[1] = 0x00000000;
-	key[2] = 0x00000000;
-	key[3] = 0x00000000;
-
-	SEED_init(&context, key);
+	SEED_init(&context, ctrNonce->Key);
 	SEED_encrypt(&context, ctrNonce->ctrNonce, ctrNonce->cipherText);
 }

@@ -22,89 +22,71 @@
 #include "algorithms/HIGHT/HIGHT.h"
 #include "algorithms/SEED/SEED.h"
 #include "CTR.h"
-#include "CTRMode.h"
+#include "CTRMode.h" 
 
-void readText(int position, Block128* block128){
+int readText(uint32_t* textList,char* fileRead){
 
 	uint32_t dataRead;
 	FILE *file;
-	int i = 0;
 	int cont = 0;
 
-	file = fopen("TextBlock.txt","r");
+	file = fopen(fileRead,"r");
 	if(file == NULL){
 		printf("Error in opening file\n");
 		exit(1);
 	}
-	
-	while(fscanf(file, "%x", &dataRead) != EOF){
-			
-		if(cont >= (position-1)*4 && cont < position*4){
-			block128->result[i] = dataRead;	
-			i++;	
-		}
+
+	while(fscanf(file, "%x", &dataRead) != EOF){	
+		textList[cont] = dataRead;
 		cont++;
-		if(cont == position*4){
-			fclose(file);
-		}
-	}
-}
-
-void readNonce(int position, Block128* block128){
-
-	uint32_t NonceRead;
-	FILE *file;
-	int i = 0;
-	int cont = 0;
-
-	file = fopen("NonceBlock.txt","r");
-	if(file == NULL){
-		printf("Error in opening file\n");
-		exit(1);
 	}
 	
-	while(fscanf(file, "%x", &NonceRead) != EOF){
-		
-		if(cont >= (position-1)*4 && cont < position*4){
-			block128->result[i] = NonceRead;
-			i++;						
-		}
-		cont++;
-		if(cont == position*4){
-			fclose(file);
-		}
-	}
+	fclose(file);
+	return cont;
 }
 
-void Call_CTR(enum Algorithm algorithm){
+void Call_CTR(enum Algorithm algorithm, int SIZE, char* fileKey){
 	CTRCounter ctrCounter;
 	Block128 newBlock;
 	Block128 newNonce;
-	int cont = 1;
 
-		
+	int contText = 0;
+	int contNonce = 0;	
+
+	uint32_t textList[12];
+	uint32_t nonceList[12];
+	
+	int numText = readText(&textList, "TextBlock.txt");
+	int numNonce = readText(&nonceList, "NonceBlock.txt");
+	int numKey = readText(&ctrCounter.Key, fileKey);
+
+	for (int i = 0; i < numKey; i++)
+		{			
+			printf("%08x ", ctrCounter.Key[i]); 
+		}
+
 	do{
-		readText(cont, &newBlock);
 
 		printf("Text : \t\t\t"); 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < SIZE; i++)
 		{			
-			ctrCounter.text[i] = newBlock.result[i];
+			ctrCounter.text[i] = textList[contText];
 			printf("%08x ", ctrCounter.text[i]); 
+			contText++;
 		}
 
 		printf("\nNonce: \t\t\t"); 
-		readNonce(cont, &newNonce);
-		for (int i = 0; i < 4; i++)
+		
+		for (int i = 0; i < SIZE; i++)
 		{			
-			ctrCounter.ctrNonce[i] = newNonce.result[i];
+			ctrCounter.ctrNonce[i] = nonceList[contNonce];
 			printf("%08x ", ctrCounter.ctrNonce[i]);  
+			contNonce++;
 		}
 
 		CTRMode_main(ctrCounter, algorithm);
 
-		cont++;
-	}while (cont < 4);	
+	}while (contText < numText);	
 }
 
 int main()
@@ -112,54 +94,59 @@ int main()
 	// TEXT 128-bits
 
 	// ARIA 
-	printf("\nARIA 128-bits :\n"); 
-	Call_CTR(ARIA_128);
+	/*printf("\nARIA 128-bits :\n"); 
+	Call_CTR(ARIA_128, 4, "Keys/ARIA_128.txt");	
 	printf("\nARIA 192-bits :\n");
-	Call_CTR(ARIA_192);
+	Call_CTR(ARIA_192, 4, "Keys/ARIA_192.txt");
 	printf("\nARIA 256-bits :\n");
-	Call_CTR(ARIA_256);
+	Call_CTR(ARIA_256, 4, "Keys/ARIA_256.txt");*/
 
-	// CAMELLIA
-	printf("\nCAMELLIA 128-bits : \n");
-	Call_CTR(CAMELLIA_128);
+	// CAMELLIA 
+	/*printf("\nCAMELLIA 128-bits : \n");
+	Call_CTR(CAMELLIA_128, 4, "Keys/CAMELLIA_128.txt");
 	printf("\nCAMELLIA 192-bits : \n");
-	Call_CTR(CAMELLIA_192);
+	Call_CTR(CAMELLIA_192, 4, "Keys/CAMELLIA_192.txt");
 	printf("\nCAMELLIA 256-bits : \n");
-	Call_CTR(CAMELLIA_256);
+	Call_CTR(CAMELLIA_256, 4, "Keys/CAMELLIA_256.txt");*/
 
 	// NOEKEON
-	printf("\nNOEKEON 128-bits :\n"); 
-	Call_CTR(NOEKEON_128);
+	/*printf("\nNOEKEON 128-bits :\n"); 
+	Call_CTR(NOEKEON_128, 4, "Keys/NOEKEON_128.txt");*/
 
 	// SEED
-	printf("\nSEED 128-bits :\n"); 
-	Call_CTR(SEED_128);
+	/*printf("\nSEED 128-bits :\n"); 
+	Call_CTR(SEED_128, 4, "Keys/SEED_128.txt");*/
 
 	// SIMON 
-	printf("\nSIMON 128-bits :\n"); 
-	Call_CTR(SIMON_128);
+	/*printf("\nSIMON 128-bits :\n"); 
+	Call_CTR(SIMON_128, 4, "Keys/SIMON_128.txt");
 	printf("\nSIMON 192-bits :\n");
-	Call_CTR(SIMON_192);
+	Call_CTR(SIMON_192, 4, "Keys/SIMON_192.txt");
 	printf("\nSIMON 256-bits :\n");
-	Call_CTR(SIMON_256);
+	Call_CTR(SIMON_256, 4, "Keys/SIMON_256.txt");*/
 
 
 	// SPECK 
-	printf("\nSPECK 128-bits :\n"); 
-	Call_CTR(SPECK_128);
+	/*printf("\nSPECK 128-bits :\n"); 
+	Call_CTR(SPECK_128, 4, "Keys/SPECK_128.txt");
 	printf("\nSPECK 192-bits :\n");
-	Call_CTR(SPECK_192);
+	Call_CTR(SPECK_192, 4, "Keys/SPECK_192.txt");
 	printf("\nSPECK 256-bits :\n");
-	Call_CTR(SPECK_256);
-	
+	Call_CTR(SPECK_256, 4, "Keys/SPECK_256.txt");*/
 
+
+	// TEXT 64-bits
+	//printf("\nGOST 256-bits :\n");
+	//Call_CTR(GOST_256, 2, "Keys/GOST_256.txt");
 	
+	printf("\nIDEIA 128-bits :\n");
+	Call_CTR(IDEA_128, 2, "Keys/IDEA_128.txt");
+
 	return 0;	
 
 
 
 	// 64 Block Lenth	
-	//GOST_main();	
 	//HIGHT_main();
 	//IDEA_main();
 	//PRESENT_main();

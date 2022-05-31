@@ -523,40 +523,7 @@ void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P)
 void ARIA_main(CTRCounter* ctrNonce, int key_size)
 {
 	AriaContext context;
-	uint32_t key[8];
-	
-	switch (key_size)
-	{
-	case 128 :
-		key[0] = 0x00010203;
-		key[1] = 0x04050607;
-		key[2] = 0x08090a0b;
-		key[3] = 0x0c0d0e0f;		
-		break;
-	case 192 :
-		key[0] = 0x00010203;
-		key[1] = 0x04050607;
-		key[2] = 0x08090a0b;
-		key[3] = 0x0c0d0e0f;
-		key[4] = 0x10111213;
-		key[5] = 0x14151617;
-		break;
-	case 256 :
-		key[0] = 0x00010203;
-		key[1] = 0x04050607;
-		key[2] = 0x08090a0b;
-		key[3] = 0x0c0d0e0f;
-		key[4] = 0x10111213;
-		key[5] = 0x14151617;
-		key[6] = 0x18191a1b;
-		key[7] = 0x1c1d1e1f;
-		break;
-	
-	default:
-		break;
-	}
-	
-	ARIA_init(&context, key, key_size);
+	ARIA_init(&context, ctrNonce->Key, key_size);
 	ARIA_encrypt(&context, ctrNonce->ctrNonce, ctrNonce->cipherText);
 	
 	return;
