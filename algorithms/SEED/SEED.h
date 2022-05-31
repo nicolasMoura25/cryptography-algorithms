@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "../../CTR.h"
+#include "../../CTRMode.h"
 
 typedef struct
 {

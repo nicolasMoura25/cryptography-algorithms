@@ -198,7 +198,7 @@ void HIGHT_decrypt(HightContext* context, uint8_t* block, uint8_t* out)
 	out[7] = x[7];
 }
 
-void HIGHT_main(void)
+void HIGHT_main(CTRCounter* ctrNonce, int key_size)
 {
 	HightContext context;
 	int i;
@@ -208,83 +208,39 @@ void HIGHT_main(void)
 	uint8_t expectedCipherText[8];
 	uint8_t decryptedText[8];
 
-	// key 00 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff
-	key[0] = 0x00;
-	key[1] = 0x11;
-	key[2] = 0x22;
-	key[3] = 0x33;
-	key[4] = 0x44;
-	key[5] = 0x55;
-	key[6] = 0x66;
-	key[7] = 0x77;
-	key[8] = 0x88;
-	key[9] = 0x99;
-	key[10] = 0xaa;
-	key[11] = 0xbb;
-	key[12] = 0xcc;
-	key[13] = 0xdd;
-	key[14] = 0xee;
-	key[15] = 0xff;
+	key[0] = ctrNonce->Key[0] >> 24;
+	key[1] = ctrNonce->Key[0] >> 16;
+	key[2] = ctrNonce->Key[0] >> 8;
+	key[3] = ctrNonce->Key[0];
+	key[4] = ctrNonce->Key[1] >> 24;
+	key[5] = ctrNonce->Key[1] >> 16;
+	key[6] = ctrNonce->Key[1] >> 8;
+	key[7] = ctrNonce->Key[1];
+	key[8] = ctrNonce->Key[2] >> 24;
+	key[9] = ctrNonce->Key[2] >> 16;
+	key[10] = ctrNonce->Key[2] >> 8;
+	key[11] = ctrNonce->Key[2];
+	key[12] = ctrNonce->Key[3] >> 24;
+	key[13] = ctrNonce->Key[3] >> 16;
+	key[14] = ctrNonce->Key[3] >> 8;
+	key[15] = ctrNonce->Key[3];
 
-	// text 00 00 00 00 00 00 00 00
-	text[0] = 0x00;
-	text[1] = 0x00;
-	text[2] = 0x00;
-	text[3] = 0x00;
-	text[4] = 0x00;
-	text[5] = 0x00;
-	text[6] = 0x00;
-	text[7] = 0x00;
-
-	// expected encryption text ca 4c b6 02 91 ff 81 31
-	expectedCipherText[0] = 0xca;
-	expectedCipherText[1] = 0x4c;
-	expectedCipherText[2] = 0xb6;
-	expectedCipherText[3] = 0x02;
-	expectedCipherText[4] = 0x91;
-	expectedCipherText[5] = 0xff;
-	expectedCipherText[6] = 0x81;
-	expectedCipherText[7] = 0x31;
+	text[0] = ctrNonce->ctrNonce[0] >> 24;
+	text[1] = ctrNonce->ctrNonce[0] >> 16;
+	text[2] = ctrNonce->ctrNonce[0] >> 8;
+	text[3] = ctrNonce->ctrNonce[0];
+	text[4] = ctrNonce->ctrNonce[1] >> 24;
+	text[5] = ctrNonce->ctrNonce[1] >> 16;
+	text[6] = ctrNonce->ctrNonce[1] >> 8;
+	text[7] = ctrNonce->ctrNonce[1];
 
 	HIGHT_init(&context, key);
-
 	HIGHT_encrypt(&context, text, cipherText);
-	HIGHT_decrypt(&context, cipherText, decryptedText);
 
-	printf("\nHIGHT 128-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 16; i++)
-	{
-		printf("%02x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%02x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%02x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%02x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%02x ", decryptedText[i]);
-	}
-	printf("\n");
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0] << 24) | (uint32_t)(cipherText[1] << 16) 
+								| (uint32_t)(cipherText[2] << 8) | (uint32_t)(cipherText[3]);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[4] << 24) | (uint32_t)(cipherText[5] << 16) 
+								| (uint32_t)(cipherText[6] << 8) | (uint32_t)(cipherText[7]);
+	ctrNonce->cipherText[2] = 0x00000000;
+	ctrNonce->cipherText[3] = 0x00000000;
 }

@@ -16,7 +16,6 @@
  */
 
 #include "ARIA.h"
-#include "../../CTR.h"
 
 // constants
 const uint32_t C1[4] = { 0x517cc1b7, 0x27220a94, 0xfe13abe8, 0xfa9a6ee0 };

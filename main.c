@@ -21,8 +21,10 @@
 #include "algorithms/SIMON/SIMON.h"
 #include "algorithms/HIGHT/HIGHT.h"
 #include "algorithms/SEED/SEED.h"
-#include "CTR.h"
 #include "CTRMode.h" 
+
+#define TEXT_SIZE_64 2
+#define TEXT_SIZE_128 4
 
 int readText(uint32_t* textList,char* fileRead){
 
@@ -60,11 +62,6 @@ void Call_CTR(enum Algorithm algorithm, int SIZE, char* fileKey){
 	int numNonce = readText(&nonceList, "NonceBlock.txt");
 	int numKey = readText(&ctrCounter.Key, fileKey);
 
-	for (int i = 0; i < numKey; i++)
-		{			
-			printf("%08x ", ctrCounter.Key[i]); 
-		}
-
 	do{
 
 		printf("Text : \t\t\t"); 
@@ -84,71 +81,68 @@ void Call_CTR(enum Algorithm algorithm, int SIZE, char* fileKey){
 			contNonce++;
 		}
 
-		CTRMode_main(ctrCounter, algorithm);
+		CTRMode_main(ctrCounter, algorithm, SIZE);
 
 	}while (contText < numText);	
 }
 
 int main()
 {
-	// TEXT 128-bits
+	// TEXT SIZE 128-bits
 
-	// ARIA 
-	/*printf("\nARIA 128-bits :\n"); 
-	Call_CTR(ARIA_128, 4, "Keys/ARIA_128.txt");	
-	printf("\nARIA 192-bits :\n");
-	Call_CTR(ARIA_192, 4, "Keys/ARIA_192.txt");
-	printf("\nARIA 256-bits :\n");
-	Call_CTR(ARIA_256, 4, "Keys/ARIA_256.txt");*/
+	printf("\n\t-----ARIA 128-bits :----- \n"); 
+	Call_CTR(ARIA_128, TEXT_SIZE_128, "Keys/ARIA_128.txt");	
+	printf("\n\t-----ARIA 192-bits :----- \n");
+	Call_CTR(ARIA_192, TEXT_SIZE_128, "Keys/ARIA_192.txt");
+	printf("\n\t-----ARIA 256-bits :----- \n");
+	Call_CTR(ARIA_256, TEXT_SIZE_128, "Keys/ARIA_256.txt");
 
-	// CAMELLIA 
-	/*printf("\nCAMELLIA 128-bits : \n");
-	Call_CTR(CAMELLIA_128, 4, "Keys/CAMELLIA_128.txt");
-	printf("\nCAMELLIA 192-bits : \n");
-	Call_CTR(CAMELLIA_192, 4, "Keys/CAMELLIA_192.txt");
-	printf("\nCAMELLIA 256-bits : \n");
-	Call_CTR(CAMELLIA_256, 4, "Keys/CAMELLIA_256.txt");*/
-
-	// NOEKEON
-	/*printf("\nNOEKEON 128-bits :\n"); 
-	Call_CTR(NOEKEON_128, 4, "Keys/NOEKEON_128.txt");*/
-
-	// SEED
-	/*printf("\nSEED 128-bits :\n"); 
-	Call_CTR(SEED_128, 4, "Keys/SEED_128.txt");*/
-
-	// SIMON 
-	/*printf("\nSIMON 128-bits :\n"); 
-	Call_CTR(SIMON_128, 4, "Keys/SIMON_128.txt");
-	printf("\nSIMON 192-bits :\n");
-	Call_CTR(SIMON_192, 4, "Keys/SIMON_192.txt");
-	printf("\nSIMON 256-bits :\n");
-	Call_CTR(SIMON_256, 4, "Keys/SIMON_256.txt");*/
+	printf("\n\t-----CAMELLIA 128-bits :----- \n");
+	Call_CTR(CAMELLIA_128, TEXT_SIZE_128, "Keys/CAMELLIA_128.txt");
+	printf("\n\t-----CAMELLIA 192-bits :----- \n");
+	Call_CTR(CAMELLIA_192, TEXT_SIZE_128, "Keys/CAMELLIA_192.txt");
+	printf("\n\t-----CAMELLIA 256-bits :----- \n");
+	Call_CTR(CAMELLIA_256, TEXT_SIZE_128, "Keys/CAMELLIA_256.txt");
 
 
-	// SPECK 
-	/*printf("\nSPECK 128-bits :\n"); 
-	Call_CTR(SPECK_128, 4, "Keys/SPECK_128.txt");
-	printf("\nSPECK 192-bits :\n");
-	Call_CTR(SPECK_192, 4, "Keys/SPECK_192.txt");
-	printf("\nSPECK 256-bits :\n");
-	Call_CTR(SPECK_256, 4, "Keys/SPECK_256.txt");*/
+	printf("\n\t-----NOEKEON 128-bits :-----\n"); 
+	Call_CTR(NOEKEON_128, TEXT_SIZE_128, "Keys/NOEKEON_128.txt");
+
+	printf("\n\t-----SEED 128-bits :-----\n"); 
+	Call_CTR(SEED_128, TEXT_SIZE_128, "Keys/SEED_128.txt");
 
 
-	// TEXT 64-bits
-	//printf("\nGOST 256-bits :\n");
-	//Call_CTR(GOST_256, 2, "Keys/GOST_256.txt");
+	printf("\n\t-----SIMON 128-bits :-----\n"); 
+	Call_CTR(SIMON_128, TEXT_SIZE_128, "Keys/SIMON_128.txt");
+	printf("\n\t-----SIMON 192-bits :-----\n");
+	Call_CTR(SIMON_192, TEXT_SIZE_128, "Keys/SIMON_192.txt");
+	printf("\n\t-----SIMON 256-bits :-----\n");
+	Call_CTR(SIMON_256, TEXT_SIZE_128, "Keys/SIMON_256.txt");
+
+
+	printf("\n\t-----SPECK 128-bits :-----\n"); 
+	Call_CTR(SPECK_128, TEXT_SIZE_128, "Keys/SPECK_128.txt");
+	printf("\n\t-----SPECK 192-bits :-----\n");
+	Call_CTR(SPECK_192, TEXT_SIZE_128, "Keys/SPECK_192.txt");
+	printf("\n\t-----SPECK 256-bits :-----\n");
+	Call_CTR(SPECK_256, TEXT_SIZE_128, "Keys/SPECK_256.txt");
+
+
+	// TEXT SIZE 64-bits	
 	
-	printf("\nIDEIA 128-bits :\n");
-	Call_CTR(IDEA_128, 2, "Keys/IDEA_128.txt");
+	printf("\n\t-----IDEA 128-bits :-----\n");
+	Call_CTR(IDEA_128, TEXT_SIZE_64, "Keys/IDEA_128.txt");
+
+	printf("\n\t-----PRESENT 80-bits :-----\n");
+	Call_CTR(PRESENT_80, TEXT_SIZE_64, "Keys/PRESENT_128.txt");
+	printf("\n\t-----PRESENT 128-bits :-----\n");
+	Call_CTR(PRESENT_128, TEXT_SIZE_64, "Keys/PRESENT_128.txt");
+
+	printf("\n\t-----HIGHT 128-bits :-----\n");
+	Call_CTR(HIGHT_128, TEXT_SIZE_64, "Keys/HIGHT_128.txt");
+
+	printf("\n\t-----GOST 256-bits :-----\n");
+	Call_CTR(GOST_256, TEXT_SIZE_64, "Keys/GOST_256.txt");
 
 	return 0;	
-
-
-
-	// 64 Block Lenth	
-	//HIGHT_main();
-	//IDEA_main();
-	//PRESENT_main();
-
 }

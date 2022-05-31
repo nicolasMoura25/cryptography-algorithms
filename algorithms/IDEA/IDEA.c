@@ -203,7 +203,32 @@ void IDEA_main(CTRCounter* ctrNonce, int key_size)
 {
 	IdeaContext context;
 
-	IDEA_init(&context, ctrNonce->Key);
-	IDEA_encrypt(&context, ctrNonce->ctrNonce, ctrNonce->cipherText);
+	uint16_t key[8];
+	uint16_t text[4];
+	uint16_t cipherText[4];
+	uint16_t expectedCipherText[4];
+	uint16_t decryptedText[4];
+
+	text[0] = ctrNonce->ctrNonce[0] >> 16;
+	text[1] = ctrNonce->ctrNonce[0];
+	text[2] = ctrNonce->ctrNonce[1] >> 16;
+	text[3] = ctrNonce->ctrNonce[1];
+
+	key[0] = ctrNonce->Key[0];
+	key[1] = ctrNonce->Key[1];
+	key[2] = ctrNonce->Key[2];
+	key[3] = ctrNonce->Key[3];
+	key[4] = ctrNonce->Key[4];
+	key[5] = ctrNonce->Key[5];
+	key[6] = ctrNonce->Key[6];
+	key[7] = ctrNonce->Key[7];
+
+	IDEA_init(&context, key);
+	IDEA_encrypt(&context, text, cipherText);
+
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0] << 16) | (uint32_t)(cipherText[1]);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[2] << 16) | (uint32_t)(cipherText[3]);
+	ctrNonce->cipherText[2] = 0x00000000;
+	ctrNonce->cipherText[3] = 0x00000000;
 
 }

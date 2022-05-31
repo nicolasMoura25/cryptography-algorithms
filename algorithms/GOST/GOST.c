@@ -123,39 +123,16 @@ uint64_t GOST_decrypt(uint64_t encryptedBlock, uint32_t* key)
 	return tc;
 }
 
-void GOST_main(void)
+void GOST_main(CTRCounter* ctrNonce, int key_size)
 {
-	uint32_t key[8];
-	int i;
-	for (i = 0; i < 8; i++)
-	{
-		key[i] = i;
-	}
+	uint64_t val0 = ctrNonce->ctrNonce[0];
+	uint64_t val1 = ctrNonce->ctrNonce[1];
+	uint64_t text = (val0 << 32) | val1;
 
-	uint64_t text = 118105110105;
-	uint64_t expectedCipherText = 3078704057068866123;
+	uint64_t cipherText = GOST_encrypt(text, ctrNonce->Key);	
 
-	uint64_t cipherText = GOST_encrypt(text, key);
-	uint64_t decrypted = GOST_decrypt(cipherText, key);
-
-	printf("\nGOST \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t%016llx", text);
-	printf("\n");
-
-	printf("encrypted text: \t\t%016llx", cipherText);
-	printf("\n");
-
-	printf("expected encrypted text: \t%016llx", expectedCipherText);
-	printf("\n");
-
-	printf("decrypted text: \t\t%016llx", decrypted);
-	printf("\n");
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText >> 32);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText);
+	ctrNonce->cipherText[2] = 0x00000000;
+	ctrNonce->cipherText[3] = 0x00000000;
 }

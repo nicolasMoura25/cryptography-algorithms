@@ -252,7 +252,7 @@ void PRESENT_decrypt(PresentContext* context, uint16_t* block, uint16_t* out)
 	out[3] = (uint16_t)state;
 }
 
-void PRESENT_main(void)
+void PRESENT_main(CTRCounter* ctrNonce, int key_size)
 {
 	PresentContext context;
 	int i;
@@ -262,121 +262,27 @@ void PRESENT_main(void)
 	uint16_t expectedCipherText[4];
 	uint16_t decryptedText[4];
 
-	// test for 80-bits key
+	text[0] = ctrNonce->ctrNonce[0] >> 16;
+	text[1] = ctrNonce->ctrNonce[0];
+	text[2] = ctrNonce->ctrNonce[1] >> 16;
+	text[3] = ctrNonce->ctrNonce[1];
 
-	// key 00000000 00000000 0000
-	key[0] = 0x0000;
-	key[1] = 0x0000;
-	key[2] = 0x0000;
-	key[3] = 0x0000;
-	key[4] = 0x0000;
-	key[5] = 0x0000;
-	key[6] = 0x0000;
-	key[7] = 0x0000;
+	key[0] = ctrNonce->Key[0] >> 16;
+	key[1] = ctrNonce->Key[0];
+	key[2] = ctrNonce->Key[1] >> 16;
+	key[3] = ctrNonce->Key[1];
+	key[4] = ctrNonce->Key[2] >> 16;
+	key[5] = ctrNonce->Key[2];
+	key[6] = ctrNonce->Key[3] >> 16;
+	key[7] = ctrNonce->Key[3];
 
-	// text 00000000 00000000
-	text[0] = 0x0000;
-	text[1] = 0x0000;
-	text[2] = 0x0000;
-	text[3] = 0x0000;
-
-	// expected encryption text 5579C138 7B228445
-	expectedCipherText[0] = 0x5579;
-	expectedCipherText[1] = 0xc138;
-	expectedCipherText[2] = 0x7b22;
-	expectedCipherText[3] = 0x8445;
-
-	// *** 80-bits key test ***
-
-	PRESENT_init(&context, key, 80);
+	PRESENT_init(&context, key, key_size);
 
 	PRESENT_encrypt(&context, text, cipherText);
 	PRESENT_decrypt(&context, cipherText, decryptedText);
 
-	printf("\nPRESENT 80-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 5; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
-
-	// *** 128-bits key test ***
-
-	// expected encryption text 04bdd5f4 eaefcc19
-	expectedCipherText[0] = 0x04bd;
-	expectedCipherText[1] = 0xd5f4;
-	expectedCipherText[2] = 0xeaef;
-	expectedCipherText[3] = 0xcc19;
-
-	PRESENT_init(&context, key, 128);
-
-	PRESENT_encrypt(&context, text, cipherText);
-	PRESENT_decrypt(&context, cipherText, decryptedText);
-
-	printf("\nPRESENT 128-bits key \n\n");
-
-	printf("key: \t\t\t\t");
-	for (i = 0; i < 8; i++)
-	{
-		printf("%08x ", key[i]);
-	}
-	printf("\n");
-
-	printf("text: \t\t\t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", text[i]);
-	}
-	printf("\n");
-
-	printf("encrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", cipherText[i]);
-	}
-	printf("\n");
-
-	printf("expected encrypted text: \t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", expectedCipherText[i]);
-	}
-	printf("\n");
-
-	printf("decrypted text: \t\t");
-	for (i = 0; i < 4; i++)
-	{
-		printf("%08x ", decryptedText[i]);
-	}
-	printf("\n");
+	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0] << 16) | (uint32_t)(cipherText[1]);
+	ctrNonce->cipherText[1] = (uint32_t)(cipherText[2] << 16) | (uint32_t)(cipherText[3]);
+	ctrNonce->cipherText[2] = 0x00000000;
+	ctrNonce->cipherText[3] = 0x00000000;
 }

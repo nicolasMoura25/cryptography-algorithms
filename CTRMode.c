@@ -48,6 +48,19 @@ void Select_Algorithm(CTRCounter* ctrCounter, enum Algorithm algorithm){
 			break;
 		case IDEA_128 :
 			IDEA_main(ctrCounter, 128);
+			break;		
+		case PRESENT_80 :
+			PRESENT_main(ctrCounter, 80);
+			break;
+		case PRESENT_128 :
+			PRESENT_main(ctrCounter, 128);
+			break;
+		case HIGHT_128 :
+			HIGHT_main(ctrCounter, 128);
+			break;
+
+		case GOST_256 :
+			GOST_main(ctrCounter, 256);
 			break;
 		
 
@@ -58,7 +71,7 @@ void Select_Algorithm(CTRCounter* ctrCounter, enum Algorithm algorithm){
 
 
 
-void CTRMode_main(CTRCounter ctrCounter, enum Algorithm algorithm){
+void CTRMode_main(CTRCounter ctrCounter, enum Algorithm algorithm, int SIZE){
 
     // ENCRYPT SIDE
 	
@@ -72,8 +85,13 @@ void CTRMode_main(CTRCounter ctrCounter, enum Algorithm algorithm){
 
 	ctrCounter.cipherTemp[0] = ctrCounter.text[0] ^ ctrCounter.cipherText[0];
 	ctrCounter.cipherTemp[1] = ctrCounter.text[1] ^ ctrCounter.cipherText[1];
-	ctrCounter.cipherTemp[2] = ctrCounter.text[2] ^ ctrCounter.cipherText[2];
-	ctrCounter.cipherTemp[3] = ctrCounter.text[3] ^ ctrCounter.cipherText[3];
+	if(SIZE == 4){
+		ctrCounter.cipherTemp[2] = ctrCounter.text[2] ^ ctrCounter.cipherText[2];
+		ctrCounter.cipherTemp[3] = ctrCounter.text[3] ^ ctrCounter.cipherText[3];
+	}else{
+		ctrCounter.cipherTemp[2] = 0x00000000;
+		ctrCounter.cipherTemp[3] = 0x00000000;
+	}
 
 	printf("\nCYPHER AFTER XOR: \t");
 	for (int i = 0; i < 4; i++)

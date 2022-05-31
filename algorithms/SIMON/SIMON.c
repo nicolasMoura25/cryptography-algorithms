@@ -195,9 +195,6 @@ void SIMON_main(CTRCounter* ctrNonce, int key_size)
 	text[0] = (val0 << 32) | val1;
 	text[1] = (val2 << 32) | val3;
 
-	printf("\nTEXT IN CAMELLIA 0: \t %016llx",text[0]);
-	printf("\nTEXT IN CAMELLIA 1: \t %016llx",text[1]);
-
 	switch (key_size)
 	{
 	case 128 :
@@ -223,11 +220,6 @@ void SIMON_main(CTRCounter* ctrNonce, int key_size)
 		break;
 	}
 
-	printf("\nKEY IN CAMELLIA 0: \t %016llx",key[0]);
-	printf("\nKEY IN CAMELLIA 1: \t %016llx",key[1]);
-	printf("\nKEY IN CAMELLIA 2: \t %016llx",key[2]);
-	printf("\nKEY IN CAMELLIA 3: \t %016llx",key[3]);
-
 	SIMON_init(&context, key, key_size);
 	SIMON_encrypt(&context, text, cipherText);
 
@@ -235,11 +227,6 @@ void SIMON_main(CTRCounter* ctrNonce, int key_size)
 	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0]);
 	ctrNonce->cipherText[2] = (uint32_t)(cipherText[1] >> 32);
 	ctrNonce->cipherText[3] = (uint32_t)(cipherText[1]);
-
-	printf("\nKEY IN CAMELLIA: \t %08x",ctrNonce->cipherText[0]);
-	printf("\nKEY IN CAMELLIA: \t %08x",ctrNonce->cipherText[1]);
-	printf("\nKEY IN CAMELLIA: \t %08x",ctrNonce->cipherText[2]);
-	printf("\nKEY IN CAMELLIA: \t %08x",ctrNonce->cipherText[3]);
 	
 	return;
 }
