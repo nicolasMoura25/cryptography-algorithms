@@ -203,12 +203,9 @@ void IDEA_decrypt(IdeaContext* context, uint16_t* encryptedBlock, uint16_t* out)
 void IDEA_main(CTRCounter* ctrNonce, int key_size)
 {
 	IdeaContext context;
-
 	uint16_t key[8];
 	uint16_t text[4];
 	uint16_t cipherText[4];
-	uint16_t expectedCipherText[4];
-	uint16_t decryptedText[4];
 
 	text[0] = ctrNonce->ctrNonce[0] >> 16;
 	text[1] = ctrNonce->ctrNonce[0];
