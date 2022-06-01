@@ -202,12 +202,9 @@ void HIGHT_decrypt(HightContext* context, uint8_t* block, uint8_t* out)
 void HIGHT_main(CTRCounter* ctrNonce, int key_size)
 {
 	HightContext context;
-	int i;
 	uint8_t key[16];
 	uint8_t text[8];
 	uint8_t cipherText[8];
-	uint8_t expectedCipherText[8];
-	uint8_t decryptedText[8];
 
 	key[0] = ctrNonce->Key[0] >> 24;
 	key[1] = ctrNonce->Key[0] >> 16;
