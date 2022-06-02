@@ -141,38 +141,6 @@ void SIMON_encrypt(SimonContext* context, uint64_t* block, uint64_t* out)
 	out[1] = y;
 }
 
-void SIMON_decrypt(SimonContext* context, uint64_t* block, uint64_t* out)
-{
-	int i;
-	uint64_t x = block[0];
-	uint64_t y = block[1];
-	uint64_t t;
-
-	if (context->nrSubkeys == 69)
-	{
-		t = y;
-		y = x;
-		x = t;
-		y ^= context->subkeys[68];
-		y ^= f(x);
-
-		for (i = 67; i >= 0; i -= 2)
-		{
-			R2(&y, &x, context->subkeys[i], context->subkeys[i - 1]);
-		}
-	}
-	else
-	{
-		for (i = context->nrSubkeys - 1; i >= 0; i -= 2)
-		{
-			R2(&y, &x, context->subkeys[i], context->subkeys[i - 1]);
-		}
-	}
-
-	out[0] = x;
-	out[1] = y;
-}
-
 void SIMON_main(CTRCounter* ctrNonce, int key_size)
 {
 	SimonContext context;
