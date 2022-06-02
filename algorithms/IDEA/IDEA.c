@@ -39,39 +39,6 @@ static uint16_t mul(uint16_t a, uint16_t b)
 	return (uint16_t)p;
 }
 
-/*
-* Euclidean multiplicative mod 65537 inverse algorithm
-*/
-static uint16_t inv(uint16_t x)
-{
-	uint16_t t0 = 1, t1;
-	uint16_t q, y;
-
-	if (x <= 1)
-		return x;	// 0 and 1 are self-inverse 
-
-	t1 = 0x10001L / x;	// Since x >= 2, this fits into 16 bits 
-	y = 0x10001L % x;
-
-	if (y == 1)
-		return 1 - t1;
-
-	do
-	{
-		q = x / y;
-		x = x % y;
-		t0 += q * t1;
-		if (x == 1)
-			return t0;
-		q = y / x;
-		y = y % x;
-		t1 += q * t0;
-	}
-	while (y != 1);
-
-	return 1 - t1;
-}
-
 static void generateEncryptionKeys(uint16_t* key, uint16_t Z[52])
 {
 	int i;
@@ -98,51 +65,6 @@ static void generateEncryptionKeys(uint16_t* key, uint16_t Z[52])
 			Z[i] = (Z[i - 7] << 9) ^ (Z[i - 6] >> 7);
 		}
 	}
-}
-
-static void generateDecryptionKeys(uint16_t* key, uint16_t Z[52])
-{
-	int i;
-	uint16_t t1, t2, t3;
-	uint16_t temp[ENCRYPTION_KEY_LEN];
-	uint16_t* p = temp + ENCRYPTION_KEY_LEN;
-
-	t1 = inv(*key++);
-	t2 = -*key++;
-	t3 = -*key++;
-	*--p = inv(*key++);
-	*--p = t3;
-	*--p = t2;
-	*--p = t1;
-
-	for (i = 0; i < NR_ROUNDS - 1; i++)
-	{
-		t1 = *key++;
-		*--p = *key++;
-		*--p = t1;
-
-		t1 = inv(*key++);
-		t2 = -*key++;
-		t3 = -*key++;
-		*--p = inv(*key++);
-		*--p = t2;
-		*--p = t3;
-		*--p = t1;
-	}
-	t1 = *key++;
-	*--p = *key++;
-	*--p = t1;
-
-	t1 = inv(*key++);
-	t2 = -*key++;
-	t3 = -*key++;
-	*--p = inv(*key++);
-	*--p = t3;
-	*--p = t2;
-	*--p = t1;
-
-	/* Copy and destroy temp copy */
-	memcpy(Z, temp, sizeof(temp));
 }
 
 static void idea(uint16_t* block, uint16_t* Z, uint16_t* out)
@@ -187,17 +109,11 @@ static void idea(uint16_t* block, uint16_t* Z, uint16_t* out)
 void IDEA_init(IdeaContext* context, uint16_t* key)
 {
 	generateEncryptionKeys(key, context->encryptionKeys);
-	generateDecryptionKeys(context->encryptionKeys, context->decryptionKeys);
 }
 
 void IDEA_encrypt(IdeaContext* context, uint16_t* block, uint16_t* out)
 {
 	idea(block, context->encryptionKeys, out);
-}
-
-void IDEA_decrypt(IdeaContext* context, uint16_t* encryptedBlock, uint16_t* out)
-{
-	idea(encryptedBlock, context->decryptionKeys, out);
 }
 
 void IDEA_main(CTRCounter* ctrNonce, int key_size)
