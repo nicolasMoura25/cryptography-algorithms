@@ -178,9 +178,10 @@ void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decrypte
 
 void NOEKEON_main(CTRCounter* ctrNonce, int key_size)
 {
+	int i;
 	uint32_t counter32[4];
 	uint8_t counter[16];
-	for(int i=0; i<16; i++){
+	for(i=0; i<16; i++){
 		counter[i] = LFSR();
 	}
 	for(i=0; i<4; i++){
