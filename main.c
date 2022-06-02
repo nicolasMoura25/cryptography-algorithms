@@ -57,9 +57,9 @@ void Call_CTR(enum Algorithm algorithm, int SIZE, char* fileKey){
 	uint32_t textList[12];
 	uint32_t nonceList[12];
 	
-	int numText = readText(&textList, "TextBlock.txt");
-	readText(&nonceList, "NonceBlock.txt");
-	readText(&ctrCounter.Key, fileKey);
+	int numText = readText(textList, "TextBlock.txt");
+	readText(nonceList, "NonceBlock.txt");
+	readText(ctrCounter.Key, fileKey);
 
 	do{
 
