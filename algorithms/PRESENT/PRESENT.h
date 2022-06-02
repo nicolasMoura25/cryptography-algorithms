@@ -18,6 +18,5 @@ typedef struct
 
 void PRESENT_init(PresentContext* context, uint16_t* key, uint16_t keyLen);
 void PRESENT_encrypt(PresentContext* context, uint16_t* block, uint16_t* out);
-void PRESENT_decrypt(PresentContext* context, uint16_t* block, uint16_t* out);
 
 void PRESENT_main(CTRCounter* ctrNonce, int key_size);
