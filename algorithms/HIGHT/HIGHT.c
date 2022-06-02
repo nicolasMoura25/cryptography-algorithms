@@ -84,24 +84,6 @@ static void HIGHT_round(uint8_t* x,
 	x[0] = temp7 ^ (f0(temp6) + subkey3);
 }
 
-static void HIGHT_inverse_round(uint8_t* x,
-						  uint8_t subkey0,
-						  uint8_t subkey1,
-						  uint8_t subkey2,
-						  uint8_t subkey3)
-{
-	uint8_t temp = x[0];
-
-	x[0] = x[1];
-	x[1] = x[2] - (f1(x[0]) ^ subkey3);
-	x[2] = x[3];
-	x[3] = x[4] ^ (f0(x[2]) + subkey2);
-	x[4] = x[5];
-	x[5] = x[6] - (f1(x[4]) ^ subkey1);
-	x[6] = x[7];
-	x[7] = temp ^ (f0(x[6]) + subkey0);
-}
-
 void HIGHT_init(HightContext* context, uint8_t* key)
 {
 	int i;
@@ -163,40 +145,6 @@ void HIGHT_encrypt(HightContext* context, uint8_t* block, uint8_t* out)
 	out[5] = x[6];
 	out[6] = x[7] ^ context->whiteningKeys[7];
 	out[7] = x[0];
-}
-
-void HIGHT_decrypt(HightContext* context, uint8_t* block, uint8_t* out)
-{
-	uint8_t r;
-	uint8_t subkey = 127;
-	uint8_t x[8];
-
-	// Final Inverse Transformation
-	x[7] = block[6] ^ context->whiteningKeys[7];
-	x[6] = block[5];
-	x[5] = block[4] - context->whiteningKeys[6];
-	x[4] = block[3];
-	x[3] = block[2] ^ context->whiteningKeys[5];
-	x[2] = block[1];
-	x[1] = block[0] - context->whiteningKeys[4];
-	x[0] = block[7];
-
-	// Rounds
-	for (r = 0; r < NR_ROUNDS; r++)
-	{
-		HIGHT_inverse_round(x, context->subkeys[subkey], context->subkeys[subkey - 1], context->subkeys[subkey - 2], context->subkeys[subkey - 3]);
-		subkey -= 4;
-	}
-
-	// Initial Inverse Transformation
-	out[0] = x[0] - context->whiteningKeys[0];
-	out[1] = x[1];
-	out[2] = x[2] ^ context->whiteningKeys[1];
-	out[3] = x[3];
-	out[4] = x[4] - context->whiteningKeys[2];
-	out[5] = x[5];
-	out[6] = x[6] ^ context->whiteningKeys[3];
-	out[7] = x[7];
 }
 
 void HIGHT_main(CTRCounter* ctrNonce, int key_size)
