@@ -20,6 +20,5 @@ typedef struct
 
 void CAMELLIA_init(CamelliaContext* context, const uint64_t* key, uint16_t keyLen);
 void CAMELLIA_encrypt(const CamelliaContext* context, const uint64_t* block, uint64_t* out);
-void CAMELLIA_decrypt(const CamelliaContext* context, const uint64_t* block, uint64_t* out);
 
 void CAMELLIA_main(CTRCounter* ctrNonce, int key_size);
