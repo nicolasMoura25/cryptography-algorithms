@@ -158,24 +158,6 @@ void NOEKEON_encrypt(uint32_t* block, uint32_t* key, uint32_t* encryptdBlock)
 	theta(key, encryptdBlock);
 }
 
-void NOEKEON_decrypt(uint32_t* encryptedBlock, uint32_t* key, uint32_t* decryptedBlock)
-{
-	uint32_t workingKey[4];
-
-	MOV_128(decryptedBlock, encryptedBlock);
-	MOV_128(workingKey, key);
-
-	theta(NULL_VECTOR, workingKey);
-
-	for (int i = NR_ROUNDS; i > 0; i--)
-	{
-		NOEKEON_round(workingKey, decryptedBlock, 0, RC[i]);
-	}
-
-	theta(workingKey, decryptedBlock);
-	decryptedBlock[0] ^= RC[0];
-}
-
 void NOEKEON_main(CTRCounter* ctrNonce, int key_size)
 {
 	int i;
