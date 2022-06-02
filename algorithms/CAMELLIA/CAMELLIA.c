@@ -431,53 +431,6 @@ void CAMELLIA_encrypt(const CamelliaContext* context, const uint64_t* block, uin
 	out[1] = D[0];
 }
 
-void CAMELLIA_decrypt(const CamelliaContext* context, const uint64_t* block, uint64_t* out)
-{
-	// D[0] is D1 and D[1] is D2
-	uint64_t D[2] = { block[0], block[1] };
-	uint16_t subkey = context->nrSubkeys - 1;
-	uint16_t dIndex;
-	uint16_t oppositeIndex;
-	uint16_t round;
-	uint16_t feistelIteration;
-
-	// Prewhitening
-	D[1] ^= context->k[subkey--];
-	D[0] ^= context->k[subkey--];
-
-	// if 128-bits key then its 18 rounds divided into 3 feistel iterations
-	// if 192/256-bits key then its 24 rounds and divided into 4 feistel iterations
-	for (feistelIteration = 0; feistelIteration < context->feistelIterations; feistelIteration++)
-	{
-		// each feistel iteration is 6 rounds
-		for (round = 1; round <= 6; round++)
-		{
-			// calculate index
-			dIndex = round % 2;
-			oppositeIndex = (~dIndex & 0x1);
-
-			// D1 is calculated in even rounds and D2 in odd rounds
-			D[dIndex] ^= F(D[oppositeIndex], context->k[subkey--]);
-		}
-
-		// do not insert FL and FLINV functions in last iteration
-		if (feistelIteration != (context->feistelIterations - 1))
-		{
-			// between each feistel iteration FL and FLINV functions are inserted
-			D[0] = FL(D[0], context->k[subkey--]);
-			D[1] = FLINV(D[1], context->k[subkey--]);
-		}
-	}
-
-	// Postwhitening
-	D[0] ^= context->k[subkey--];
-	D[1] ^= context->k[subkey--];
-
-	// copy cipher text to output
-	out[0] = D[1];
-	out[1] = D[0];
-}
-
 void CAMELLIA_main(CTRCounter* ctrNonce, int key_size)
 {
 	CamelliaContext context;
