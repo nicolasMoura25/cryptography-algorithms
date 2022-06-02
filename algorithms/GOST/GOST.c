@@ -99,31 +99,6 @@ uint64_t GOST_encrypt(uint64_t block, uint32_t* key)
 	return tc;
 }
 
-uint64_t GOST_decrypt(uint64_t encryptedBlock, uint32_t* key)
-{
-	N1 = (uint32_t)encryptedBlock;
-	N2 = encryptedBlock >> 32;
-
-	// last 8 rounds
-	for (int i = 0; i <= 7; i++)
-	{
-		GOST_round(key[i]);
-	}
-
-	// first 24 rounds
-	for (int k = 0; k < 3; k++)
-	{
-		for (int i = 7; i >= 0; i--)
-		{
-			GOST_round(key[i]);
-		}
-	}
-
-	uint64_t tc = N1;
-	tc = (tc << 32) | N2;
-	return tc;
-}
-
 void GOST_main(CTRCounter* ctrNonce, int key_size)
 {
 	uint64_t val0 = ctrNonce->ctrNonce[0];
