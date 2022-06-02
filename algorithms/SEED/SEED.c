@@ -278,53 +278,6 @@ void SEED_encrypt(SeedContext* context, uint32_t* block, uint32_t* out)
 	out[3] = r1;
 }
 
-void SEED_decrypt(SeedContext* context, uint32_t* block, uint32_t* out)
-{
-	int i;
-	uint32_t temp0;
-	uint32_t temp1;
-	// subkey is descending in decryption
-	uint32_t subkey = 31;
-	// left 64 bits of block divided into 2 32 bits parts
-	uint32_t l0 = block[0];
-	uint32_t l1 = block[1];
-	// right 64 bits of block divided into 2 32 bits parts
-	uint32_t r0 = block[2];
-	uint32_t r1 = block[3];
-
-	for (i = 0; i < NR_ROUNDS - 1; i++)
-	{
-		/*
-		  T = R;
-		  R = L ^ F(Ki, R);
-		  L = T;
-		*/
-		F(r0, r1, context->subkeys[subkey - 1], context->subkeys[subkey], &temp0, &temp1);
-
-		temp0 ^= l0;
-		temp1 ^= l1;
-
-		l0 = r0;
-		l1 = r1;
-
-		r0 = temp0;
-		r1 = temp1;
-
-		subkey -= 2;
-	}
-
-	// last round we update l instead of r
-	F(r0, r1, context->subkeys[subkey - 1], context->subkeys[subkey], &temp0, &temp1);
-
-	l0 ^= temp0;
-	l1 ^= temp1;
-
-	out[0] = l0;
-	out[1] = l1;
-	out[2] = r0;
-	out[3] = r1;
-}
-
 void SEED_main(CTRCounter* ctrNonce, int key_size)
 {
 	SeedContext context;
