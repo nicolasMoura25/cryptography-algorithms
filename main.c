@@ -12,7 +12,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "CTRMode.h" 
+#include "CTRMode.h"
+#include "algorithms/ARIA/ARIA.h"
+#include "algorithms/CAMELLIA/CAMELLIA.h"
+#include "algorithms/NOEKEON/NOEKEON.h"
+#include "algorithms/SEED/SEED.h"
+#include "algorithms/SIMON/SIMON.h"
+#include "algorithms/SPECK/SPECK.h"
+#include "algorithms/IDEA/IDEA.h"
+#include "algorithms/PRESENT/PRESENT.h"
+#include "algorithms/HIGHT/HIGHT.h"
+#include "algorithms/GOST/GOST.h"
 
 #define TEXT_SIZE_64 2
 #define TEXT_SIZE_128 4
