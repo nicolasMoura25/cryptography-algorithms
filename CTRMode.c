@@ -6,6 +6,16 @@
  */
 
 #include "CTRMode.h"
+#include "algorithms/ARIA/ARIA.h"
+#include "algorithms/CAMELLIA/CAMELLIA.h"
+#include "algorithms/NOEKEON/NOEKEON.h"
+#include "algorithms/SEED/SEED.h"
+#include "algorithms/SIMON/SIMON.h"
+#include "algorithms/SPECK/SPECK.h"
+#include "algorithms/IDEA/IDEA.h"
+#include "algorithms/PRESENT/PRESENT.h"
+#include "algorithms/HIGHT/HIGHT.h"
+#include "algorithms/GOST/GOST.h"
 
 void Select_Algorithm(CTRCounter* ctrCounter, enum Algorithm algorithm){
 	switch (algorithm)
