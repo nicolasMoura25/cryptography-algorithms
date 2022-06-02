@@ -61,11 +61,6 @@ static const uint32_t RC[] =
    0xd4
 };
 
-static const uint32_t NULL_VECTOR[] =
-{
-	0x00, 0x00, 0x00, 0x00
-};
-
 static void MOV_128(uint32_t* y, uint32_t* x)
 {
 	y[0] = x[0];
