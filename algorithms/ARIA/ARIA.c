@@ -359,32 +359,6 @@ static void generateEncryptionKeys(uint32_t* W0,
 	XOR_128(eks[16], W0);
 }
 
-static void generateDecryptionKeys(uint32_t eks[][4], uint32_t dks[][4], uint32_t rounds)
-{
-	uint32_t i;
-	uint32_t ekPos = rounds - 1;
-	uint32_t dkPos = 0;
-
-	/*
-		n = 12
-
-		dk1 = ek{n+1},
-		dk2 = A(ek{n}),
-		dk3 = A(ek{n-1}),
-		...,
-		dk{n}= A(ek2),
-		dk{n+1}= ek1.
-	*/
-	MOV_128(dks[dkPos++], eks[ekPos--]);
-
-	// -2 to discard first and last round
-	for (i = 0; i < rounds - 2; i++)
-	{
-		A(eks[ekPos--], dks[dkPos++]);
-	}
-	MOV_128(dks[dkPos], eks[ekPos]);
-}
-
 void ARIA_init(AriaContext* context, const uint32_t* key, uint32_t keyLength)
 {
 	uint32_t W0[4];
@@ -452,7 +426,6 @@ void ARIA_init(AriaContext* context, const uint32_t* key, uint32_t keyLength)
 
 	// generate encryption and decryption keys
 	generateEncryptionKeys(W0, W1, W2, W3, context->eks);
-	generateDecryptionKeys(context->eks, context->dks, context->rounds);
 }
 
 void ARIA_encrypt(AriaContext* context, uint32_t* block, uint32_t* P)
@@ -486,38 +459,6 @@ void ARIA_encrypt(AriaContext* context, uint32_t* block, uint32_t* P)
 	SL2(P, P);
 
 	XOR_128(P, context->eks[subkey++]);
-}
-
-void ARIA_decrypt(AriaContext* context, uint32_t* block, uint32_t* P)
-{
-	uint32_t round = 0;
-	uint32_t subkey = 0;
-	void (*roundFunctions[2]) (uint32_t* D, uint32_t* RK, uint32_t* output) = { FE, FO };
-
-	MOV_128(P, block);
-
-	for (round = 1; round <= context->rounds - 2; round++)
-	{
-		// optimize if condifion using array of function pointer to point to even/odd function
-		(*roundFunctions[round % 2])(P, context->dks[subkey++], P);
-
-		/*if (round % 2 != 0)
-		{
-			FO(P, context->dks[subkey++], P);
-		}
-		else
-		{
-			FE(P, context->dks[subkey++], P);
-		}*/
-	}
-
-	// last step is different with last two keys
-	// C = SL2(P11 ^ dk12) ^ dk13;
-	XOR_128(P, context->dks[subkey++]);
-
-	SL2(P, P);
-
-	XOR_128(P, context->dks[subkey++]);
 }
 
 void ARIA_main(CTRCounter* ctrNonce, int key_size)
