@@ -256,12 +256,9 @@ void PRESENT_decrypt(PresentContext* context, uint16_t* block, uint16_t* out)
 void PRESENT_main(CTRCounter* ctrNonce, int key_size)
 {
 	PresentContext context;
-	int i;
 	uint16_t key[8];
 	uint16_t text[4];
 	uint16_t cipherText[4];
-	uint16_t expectedCipherText[4];
-	uint16_t decryptedText[4];
 
 	text[0] = ctrNonce->ctrNonce[0] >> 16;
 	text[1] = ctrNonce->ctrNonce[0];
@@ -278,9 +275,7 @@ void PRESENT_main(CTRCounter* ctrNonce, int key_size)
 	key[7] = ctrNonce->Key[3];
 
 	PRESENT_init(&context, key, key_size);
-
 	PRESENT_encrypt(&context, text, cipherText);
-	PRESENT_decrypt(&context, cipherText, decryptedText);
 
 	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0] << 16) | (uint32_t)(cipherText[1]);
 	ctrNonce->cipherText[1] = (uint32_t)(cipherText[2] << 16) | (uint32_t)(cipherText[3]);
