@@ -12,16 +12,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "algorithms/GOST/GOST.h"
-#include "algorithms/ARIA/ARIA.h"
-#include "algorithms/NOEKEON/NOEKEON.h"
-#include "algorithms/IDEA/IDEA.h"
-#include "algorithms/PRESENT/PRESENT.h"
-#include "algorithms/CAMELLIA/CAMELLIA.h"
-#include "algorithms/SPECK/SPECK.h"
-#include "algorithms/SIMON/SIMON.h"
-#include "algorithms/HIGHT/HIGHT.h"
-#include "algorithms/SEED/SEED.h"
 #include "CTRMode.h" 
 
 #define TEXT_SIZE_64 2
@@ -50,8 +40,6 @@ int readText(uint32_t* textList,char* fileRead){
 
 void Call_CTR(enum Algorithm algorithm, int SIZE, char* fileKey){
 	CTRCounter ctrCounter;
-	Block128 newBlock;
-	Block128 newNonce;
 
 	int contText = 0;
 	int contNonce = 0;	
@@ -60,8 +48,8 @@ void Call_CTR(enum Algorithm algorithm, int SIZE, char* fileKey){
 	uint32_t nonceList[12];
 	
 	int numText = readText(&textList, "TextBlock.txt");
-	int numNonce = readText(&nonceList, "NonceBlock.txt");
-	int numKey = readText(&ctrCounter.Key, fileKey);
+	readText(&nonceList, "NonceBlock.txt");
+	readText(&ctrCounter.Key, fileKey);
 
 	do{
 
