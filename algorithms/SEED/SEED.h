@@ -18,6 +18,5 @@ typedef struct
 
 void SEED_init(SeedContext* context, uint32_t* key);
 void SEED_encrypt(SeedContext* context, uint32_t* block, uint32_t* out);
-void SEED_decrypt(SeedContext* context, uint32_t* block, uint32_t* out);
 
 void SEED_main(CTRCounter* ctrNonce, int key_size);
