@@ -19,6 +19,5 @@ typedef struct
 
 void SIMON_init(SimonContext* context, uint64_t* key, uint16_t keyLen);
 void SIMON_encrypt(SimonContext* context, uint64_t* block, uint64_t* out);
-void SIMON_decrypt(SimonContext* context, uint64_t* block, uint64_t* out);
 
 void SIMON_main(CTRCounter* ctrNonce, int key_size);
