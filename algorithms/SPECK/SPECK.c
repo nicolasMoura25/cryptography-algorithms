@@ -38,15 +38,6 @@ static void R(uint64_t* x, uint64_t* y, uint64_t k)
 	*y ^= *x;
 }
 
-static void RI(uint64_t* x, uint64_t* y, uint64_t k)
-{
-	*y ^= *x;
-	*y = ROR_64(*y, 3);
-	*x ^= k;
-	*x -= *y;
-	*x = ROL_64(*x, 8);
-}
-
 void SPECK_init(SpeckContext* context, uint64_t* key, uint16_t keyLen)
 {
 	uint64_t A;
@@ -122,21 +113,6 @@ void SPECK_encrypt(SpeckContext* context, uint64_t* block, uint64_t* out)
 	out[1] = y;
 }
 
-void SPECK_decrypt(SpeckContext* context, uint64_t* block, uint64_t* out)
-{
-	int i;
-	uint64_t x = block[0];
-	uint64_t y = block[1];
-
-	for (i = context->nrSubkeys - 1; i >= 0; i--)
-	{
-		RI(&x, &y, context->subkeys[i]);
-	}
-
-	out[0] = x;
-	out[1] = y;
-}
-
 void SPECK_main(CTRCounter* ctrNonce, int key_size)
 {
 	SpeckContext context;
@@ -187,7 +163,6 @@ void SPECK_main(CTRCounter* ctrNonce, int key_size)
 
 	SPECK_init(&context, key, key_size);
 	SPECK_encrypt(&context, text, cipherText);
-
 
 	ctrNonce->cipherText[0] = (uint32_t)(cipherText[0] >> 32);
 	ctrNonce->cipherText[1] = (uint32_t)(cipherText[0]);
